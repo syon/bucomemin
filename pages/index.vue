@@ -1,9 +1,9 @@
 <template>
   <section class="container">
     <div>
-      <logo />
+      <img :src="avatarUrl" />
       <h1 class="title">
-        awake
+        {{ count.total }}
       </h1>
       <h2 class="subtitle">
         My groovy Nuxt.js project
@@ -24,11 +24,33 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
+import Hatena from 'js-hatena'
 
 export default {
-  components: {
-    Logo
+  data() {
+    return {
+      count: {}
+    }
+  },
+  computed: {
+    avatarUrl() {
+      const userId = 'Dy66'
+      // return `https://cdn.profile-image.st-hatena.com/users/${userId}/profile.gif`
+      return Hatena.User.getProfileImageURL(userId)
+    }
+  },
+  mounted() {
+    this.getTotalStars()
+  },
+  methods: {
+    async getTotalStars() {
+      const userId = 'Dy66'
+      const uri = `http://b.hatena.ne.jp/${userId}/`
+      const res = await Hatena.Star.getTotalCount({ uri })
+      console.log({ res })
+      this.count = res.count
+      this.count.total = res.star_count
+    }
   }
 }
 </script>
