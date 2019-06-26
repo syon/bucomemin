@@ -16,9 +16,12 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "5.5.4",
+    "cheerio": "1.0.0-rc.3",
     "cross-env": "5.2.0",
     "js-hatena": "github:syon/js-hatena",
-    "nuxt": "2.8.1"
+    "nuxt": "2.8.1",
+    "request": "2.88.0",
+    "request-promise-native": "1.0.7"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "0.0.1",

@@ -30,7 +30,6 @@ export default {
   computed: {
     avatarUrl() {
       const userId = 'Dy66'
-      // return `https://cdn.profile-image.st-hatena.com/users/${userId}/profile.gif`
       return Hatena.User.getProfileImageURL(userId)
     }
   },
