@@ -8,16 +8,10 @@
       <h2 class="subtitle">
         My groovy Nuxt.js project
       </h2>
-      <div class="links">
-        <a href="https://nuxtjs.org/" target="_blank" class="button--green"
-          >Documentation</a
-        >
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
-          >GitHub</a
-        >
+      <div>
+        <a v-for="f in favorites" :key="f.name" href="#" class="fav">
+          {{ f.name }}
+        </a>
       </div>
     </div>
   </section>
@@ -29,7 +23,8 @@ import Hatena from 'js-hatena'
 export default {
   data() {
     return {
-      count: {}
+      count: {},
+      favorites: []
     }
   },
   computed: {
@@ -41,15 +36,20 @@ export default {
   },
   mounted() {
     this.getTotalStars()
+    this.getFavorites()
   },
   methods: {
     async getTotalStars() {
       const userId = 'Dy66'
       const uri = `http://b.hatena.ne.jp/${userId}/`
       const res = await Hatena.Star.getTotalCount({ uri })
-      console.log({ res })
       this.count = res.count
       this.count.total = res.star_count
+    },
+    async getFavorites() {
+      const userId = 'Dy66'
+      const res = await Hatena.User.getFavorites(userId)
+      this.favorites = res.favorites
     }
   }
 }
@@ -65,25 +65,7 @@ export default {
   text-align: center;
 }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
-}
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
+.fav {
+  padding: 2px 4px;
 }
 </style>
