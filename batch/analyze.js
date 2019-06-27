@@ -6,8 +6,8 @@ async function main() {
   await 0
   const jsonStr = fs.readFileSync(`./batch/data/${user}.json`, 'utf8')
   const data = JSON.parse(jsonStr)
-  const anondCommentRate = calcAnondCommentRate(data)
-  const result = { anondCommentRate }
+  const commentRate = calcCommentRate(data)
+  const result = { commentRate }
   console.log(result)
 }
 
@@ -18,12 +18,9 @@ async function main() {
   console.error(e)
 })
 
-function calcAnondCommentRate(data) {
-  const anondList = data.filter(x => {
-    return /^https:\/\/anond\.hatelabo\.jp/.test(x.url)
-  })
-  const commented = anondList.filter(x => {
+function calcCommentRate(data) {
+  const commented = data.filter(x => {
     return x.comment.trim().length > 0
   })
-  return Math.floor((commented.length / anondList.length) * 100)
+  return Math.floor((commented.length / data.length) * 100)
 }
