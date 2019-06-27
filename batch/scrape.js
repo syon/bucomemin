@@ -56,12 +56,15 @@ async function extractEntries() {
         const timestamp = $(el)
           .find('.centerarticle-reaction-timestamp')
           .text()
+        const comment = $(el)
+          .find('.js-comment')
+          .text()
         // Twitter clicks needs ajax evaluation.
         // const twitterClicks = $(el)
         //   .find('.twitter-click > a > span')
         //   .text()
         //   .replace(/ clicks?/, '')
-        return { title, url, users, timestamp }
+        return { title, url, users, timestamp, comment }
       })
       return list.get()
     })
