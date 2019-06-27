@@ -53,6 +53,11 @@ async function extractEntries() {
           .find('.centerarticle-users > a')
           .text()
           .replace(/ users?/, '')
+        const hatebuLink =
+          'https://b.hatena.ne.jp' +
+          $(el)
+            .find('.centerarticle-users > a')
+            .attr('href')
         const timestamp = $(el)
           .find('.centerarticle-reaction-timestamp')
           .text()
@@ -69,7 +74,15 @@ async function extractEntries() {
         //   .find('.twitter-click > a > span')
         //   .text()
         //   .replace(/ clicks?/, '')
-        return { title, url, users, timestamp, comment, commentPermalink }
+        return {
+          title,
+          url,
+          users,
+          hatebuLink,
+          timestamp,
+          comment,
+          commentPermalink
+        }
       })
       return list.get()
     })
