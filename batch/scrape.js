@@ -59,12 +59,17 @@ async function extractEntries() {
         const comment = $(el)
           .find('.js-comment')
           .text()
+        const commentPermalink =
+          'https://b.hatena.ne.jp' +
+          $(el)
+            .find('.comment-permalink > a')
+            .attr('href')
         // Twitter clicks needs ajax evaluation.
         // const twitterClicks = $(el)
         //   .find('.twitter-click > a > span')
         //   .text()
         //   .replace(/ clicks?/, '')
-        return { title, url, users, timestamp, comment }
+        return { title, url, users, timestamp, comment, commentPermalink }
       })
       return list.get()
     })
