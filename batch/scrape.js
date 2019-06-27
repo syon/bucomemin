@@ -27,6 +27,8 @@ async function main() {
   console.log('///////////////////////////')
   console.log(results)
   console.log('///////////////////////////')
+  const jsonStr = JSON.stringify(results, null, 2)
+  require('fs').writeFileSync(`./batch/data/${user}.json`, jsonStr)
 }
 
 ;(async () => {
