@@ -1,5 +1,6 @@
 const request = require('request-promise-native')
 const cheerio = require('cheerio')
+const Hatena = require('./hatena')
 
 const options = {
   headers: {
@@ -20,10 +21,18 @@ async function getBookmarks({ user }) {
     results = results.concat(list)
     console.log(results.length)
   }
-  return results
+
+  const res = await Promise.all(
+    results.map(async entry => {
+      const bucome = await Hatena.Custom.getBucomeDetailByUser(entry.url, user)
+      bucome.stars = bucome.stars || []
+      return { ...entry, ...bucome }
+    })
+  )
+  return res
 }
 
-async function extractEntries() {
+async function extractEntries(options) {
   return await request(options)
     .then(function($) {
       const list = $('.bookmark-item').map((i, el) => {
@@ -38,7 +47,7 @@ async function extractEntries() {
           .find('.centerarticle-users > a')
           .text()
           .replace(/ users?/, '')
-        const hatebuLink =
+        const hatebuPage =
           'https://b.hatena.ne.jp' +
           $(el)
             .find('.centerarticle-users > a')
@@ -63,7 +72,7 @@ async function extractEntries() {
           title,
           url,
           users,
-          hatebuLink,
+          hatebuPage,
           date,
           comment,
           commentPermalink

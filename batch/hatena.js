@@ -47,7 +47,9 @@ class Bookmark {
     const url = encodeURIComponent(pageUrl)
     const apiUrl = `${B.apiOrigin}/entry/jsonlite/?url=${url}`
     options.uri = apiUrl
-    const result = await request(options)
+    const result = await request(options).catch(e => {
+      console.warn(e)
+    })
     return result || {}
   }
 
@@ -155,8 +157,20 @@ class Star {
   }
 }
 
+class Custom {
+  /** Hatenaサーバへの負荷が心配 */
+  static async getBucomeDetailByUser(rawUrl, user) {
+    const entry = await Bookmark.getEntryLite(rawUrl)
+    if (!entry.bookmarks) return {}
+    const b = entry.bookmarks.filter(x => x.user === user)
+    const s = await Star.getStarEntry(entry.eid, b[0])
+    return Object.assign({}, b[0], s.entries[0])
+  }
+}
+
 module.exports = {
   User,
   Bookmark,
-  Star
+  Star,
+  Custom
 }
