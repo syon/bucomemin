@@ -48,6 +48,8 @@ class Bookmark {
     const apiUrl = `${B.apiOrigin}/entry/jsonlite/?url=${url}`
     options.uri = apiUrl
     const result = await request(options).catch(e => {
+      console.log('=======================')
+      console.log(rawPageUrl)
       console.warn(e)
     })
     return result || {}
@@ -126,6 +128,7 @@ class Star {
   }
 
   static async getStarEntry(eid, bookmark) {
+    if (!bookmark || !bookmark.timestamp) return {}
     const ymd = bookmark.timestamp.match(/^(20..\/..\/..)/)[1]
     const yyyymmdd = ymd.replace(/\//g, '')
     const star = await Star.getEntry({
@@ -163,8 +166,10 @@ class Custom {
     const entry = await Bookmark.getEntryLite(rawUrl)
     if (!entry.bookmarks) return {}
     const b = entry.bookmarks.filter(x => x.user === user)
-    const s = await Star.getStarEntry(entry.eid, b[0])
-    return Object.assign({}, b[0], s.entries[0])
+    const c = b[0] || {}
+    const s = await Star.getStarEntry(entry.eid, c)
+    const t = s.entries ? s.entries[0] : {}
+    return Object.assign({}, c, t)
   }
 }
 
