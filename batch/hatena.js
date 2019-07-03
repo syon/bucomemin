@@ -162,11 +162,12 @@ class Star {
 
 class Custom {
   /** Hatenaサーバへの負荷が心配 */
-  static async getBucomeDetailByUser(rawUrl, user) {
+  static async getBucomeDetailFromAPI(rawUrl, user) {
     const entry = await Bookmark.getEntryLite(rawUrl)
     if (!entry.bookmarks) return {}
     const b = entry.bookmarks.filter(x => x.user === user)
     const c = b[0] || {}
+    // Get star counts from official API
     const s = await Star.getStarEntry(entry.eid, c)
     const t = s.entries ? s.entries[0] : {}
     return Object.assign({}, c, t)

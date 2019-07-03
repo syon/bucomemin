@@ -39,7 +39,7 @@ async function scrollToBottom(page, viewportHeight) {
       return Promise.resolve(window.scrollTo(0, scrollTo))
     }, nextPosition)
     await page
-      .waitForNavigation({ waitUntil: 'networkidle2', timeout: 5000 })
+      .waitForNavigation({ waitUntil: 'networkidle2', timeout: 2500 })
       .catch(e => console.log('timeout exceed. proceed to next operation'))
 
     currentPosition = nextPosition
