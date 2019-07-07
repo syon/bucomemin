@@ -1,3 +1,4 @@
+const qs = require('querystring')
 const request = require('request-promise-native')
 const { parseURL } = require('whatwg-url')
 
@@ -44,7 +45,7 @@ class Bookmark {
 
   static async getEntryLite(rawPageUrl) {
     const pageUrl = Bookmark.tweakPageUrl(rawPageUrl)
-    const url = encodeURIComponent(pageUrl)
+    const url = Util.encodeURI(pageUrl)
     const apiUrl = `${B.apiOrigin}/entry/jsonlite/?url=${url}`
     options.uri = apiUrl
     const result = await request(options).catch(e => {
@@ -71,21 +72,22 @@ class Bookmark {
 
 class Star {
   static async getEntry({ user, yyyymmdd, eid }) {
-    const uri = `http://b.hatena.ne.jp/${user}/${yyyymmdd}%23bookmark-${eid}`
-    const apiUrl = `${B.starOrigin}/entry.json?uri=${uri}`
-    options.uri = apiUrl
+    const uri = `https://b.hatena.ne.jp/${user}/${yyyymmdd}%23bookmark-${eid}`
+    const encodedUri = Util.encodeURI(uri)
+    options.uri = `${B.starOrigin}/entry.json?uri=${encodedUri}`
     return await request(options)
   }
 
   static async getTotalCount({ uri }) {
-    const apiUrl = `${B.starAddOrigin}/blog.json?uri=${uri}`
-    options.uri = apiUrl
+    const encodedUri = Util.encodeURI(uri)
+    options.uri = `${B.starAddOrigin}/blog.json?uri=${encodedUri}`
     return await request(options)
   }
 
   static getEntryCountImageURL({ user, yyyymmdd, eid }) {
-    const uri = `http://b.hatena.ne.jp/${user}/${yyyymmdd}%23bookmark-${eid}`
-    const apiUrl = `${B.starImageOrigin}/entry.count.image?uri=${uri}`
+    const uri = `https://b.hatena.ne.jp/${user}/${yyyymmdd}%23bookmark-${eid}`
+    const encodedUri = Util.encodeURI(uri)
+    const apiUrl = `${B.starImageOrigin}/entry.count.image?uri=${encodedUri}`
     return apiUrl
   }
 
@@ -140,9 +142,8 @@ class Star {
   }
 
   static async getEntries(rawPageUrl) {
-    const uri = encodeURIComponent(rawPageUrl)
-    const apiUrl = `${B.starAddOrigin}/entries.json?uri=${uri}`
-    options.uri = apiUrl
+    const encodedUri = Util.encodeURI(rawPageUrl)
+    options.uri = `${B.starAddOrigin}/entries.json?uri=${encodedUri}`
     return await request(options)
   }
 
@@ -152,10 +153,9 @@ class Star {
   }
 
   static async addStar(rawPageUrl) {
-    const uri = encodeURIComponent(rawPageUrl)
+    const encodedUri = Util.encodeURI(rawPageUrl)
     const rks = await Star.getRKS(rawPageUrl)
-    const apiUrl = `${B.starAddOrigin}/star.add.json?uri=${uri}&rks=${rks}`
-    options.uri = apiUrl
+    options.uri = `${B.starAddOrigin}/star.add.json?uri=${encodedUri}&rks=${rks}`
     return await request(options)
   }
 }
@@ -171,6 +171,26 @@ class Custom {
     const s = await Star.getStarEntry(entry.eid, c)
     const t = s.entries ? s.entries[0] : {}
     return Object.assign({}, c, t)
+  }
+}
+
+class Util {
+  static encodeURI(uri) {
+    // decode the passed uri recursively.
+    const decodedUri = Util.fullyDecodeURI(uri)
+    return qs.escape(decodedUri)
+  }
+
+  static isEncoded(uri) {
+    uri = uri || ''
+    return uri !== qs.unescape(uri)
+  }
+
+  static fullyDecodeURI(uri) {
+    while (Util.isEncoded(uri)) {
+      uri = qs.unescape(uri)
+    }
+    return uri
   }
 }
 

@@ -5,6 +5,7 @@
   "author": "syon",
   "private": true,
   "scripts": {
+    "batch:scrape": "node batch/scrape.js",
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",

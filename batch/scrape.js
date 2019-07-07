@@ -1,12 +1,12 @@
+const dg = require('debug')
 const MyHatebu = require('./myhatebu')
+
+dg.enable('app:*')
 
 const user = 'Dy66'
 
 async function main() {
   const results = await MyHatebu.getBookmarks({ user })
-  console.log('///////////////////////////')
-  console.log(results)
-  console.log('///////////////////////////')
   const jsonStr = JSON.stringify(results, null, 2)
   require('fs').writeFileSync(`./batch/data/${user}.json`, jsonStr)
 }

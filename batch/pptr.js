@@ -2,20 +2,25 @@ const puppeteer = require('puppeteer')
 const dg = require('debug')('app:pptr')
 
 module.exports = async function(url) {
-  const viewportHeight = 1200
-  const viewportWidth = 1600
+  const viewportHeight = 2000
+  const viewportWidth = 1200
   const browser = await puppeteer.launch()
-  const page = await browser.newPage()
-  page.setViewport({ width: viewportWidth, height: viewportHeight })
-  dg('goto', url)
-  await page.goto(url)
-  dg('click recent...')
-  await page.click('[data-sort="recent"]')
-  await page.waitFor(3000)
-  await scrollToBottom(page, viewportHeight)
-  dg('load html source...')
-  const html = await page.content()
-  dg('browser close...')
+  let html = ''
+  try {
+    const page = await browser.newPage()
+    page.setViewport({ width: viewportWidth, height: viewportHeight })
+    dg('goto', url)
+    await page.goto(url)
+    dg('click recent...')
+    await page.click('[data-sort="recent"]').catch(() => {})
+    await page.waitFor(3000)
+    await scrollToBottom(page, viewportHeight)
+    dg('load html source...')
+    html = await page.content()
+    dg('browser close...')
+  } catch (e) {
+    dg(e)
+  }
   await browser.close()
   return html
 }
@@ -39,14 +44,12 @@ async function scrollToBottom(page, viewportHeight) {
       return Promise.resolve(window.scrollTo(0, scrollTo))
     }, nextPosition)
     await page
-      .waitForNavigation({ waitUntil: 'networkidle2', timeout: 2500 })
-      .catch(e => console.log('timeout exceed. proceed to next operation'))
+      .waitForNavigation({ waitUntil: 'networkidle2', timeout: 1500 })
+      .catch(e => dg('wait timeout.'))
 
     currentPosition = nextPosition
-    console.log(`scrollNumber: ${scrollNumber}`)
-    console.log(`currentPosition: ${currentPosition}`)
-
     scrollHeight = await page.evaluate(getScrollHeight)
-    console.log(`ScrollHeight ${scrollHeight}`)
+    const rate = Math.floor((currentPosition / scrollHeight) * 100)
+    dg(`Scroll[${scrollNumber}]: ${currentPosition}/${scrollHeight} (${rate}%)`)
   }
 }

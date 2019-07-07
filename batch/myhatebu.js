@@ -15,7 +15,7 @@ const options = {
 async function getBookmarks({ user }) {
   console.log('====[extractEntries]========================')
   let recentBookmarks = []
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 1; i++) {
     console.log('......', i)
     const num = i + 1
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
@@ -34,6 +34,7 @@ async function getBookmarks({ user }) {
   }
 
   console.log('====[scrapeHatebuPageData]========================')
+  // TODO: はてブページのマスタとしてユーザー配下ではなくロビネライクに管理すべき
   const results = []
   for (const ex of recentBookmarksEx) {
     const bucome = await scrapeHatebuPageData(ex.hatebuPage)
