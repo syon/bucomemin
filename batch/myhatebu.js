@@ -97,6 +97,12 @@ async function extractEntries(options) {
     })
 }
 
+/**
+ * スクレイピングしないと取得できないもの
+ *   - 人気コメント
+ *   - Twitter clicks
+ *   - Timestamp
+ */
 async function scrapeHatebuPageData(hatebuPageUrl) {
   const html = await pptr(hatebuPageUrl)
   const $ = cheerio.load(html)
