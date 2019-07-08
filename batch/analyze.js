@@ -8,9 +8,9 @@ async function main() {
   const data = JSON.parse(jsonStr)
   const commentRate = calcCommentRate(data)
   const starredRate = calcStarredRate(data)
-  const rankinRate = calcRankinRate(data, user)
+  // const rankinRate = calcRankinRate(data, user)
   const anondRate = calcAnondRate(data)
-  const result = { commentRate, starredRate, rankinRate, anondRate }
+  const result = { commentRate, starredRate, anondRate }
   console.log(result)
 }
 

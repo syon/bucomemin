@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "batch:scrape": "node batch/scrape.js",
+    "batch:analyze": "node batch/analyze.js",
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
