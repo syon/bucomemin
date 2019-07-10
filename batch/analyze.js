@@ -10,8 +10,11 @@ async function main() {
   const starredRate = calcStarredRate(data)
   // const rankinRate = calcRankinRate(data, user)
   const anondRate = calcAnondRate(data)
-  const result = { commentRate, starredRate, anondRate }
+  const calendarData = makeCalendarData(data)
+  const result = { commentRate, starredRate, anondRate, calendarData }
   console.log(result)
+  const jsonStrW = JSON.stringify(result, null, 2)
+  require('fs').writeFileSync(`./store/dataset/${user}.json`, jsonStrW)
 }
 
 ;(async () => {
@@ -54,4 +57,16 @@ function calcAnondRate(data) {
     return /^https:\/\/anond.hatelabo.jp/.test(x.url)
   })
   return Math.floor((anond.length / data.length) * 100)
+}
+
+function makeCalendarData(data) {
+  const result = {}
+  for (const d of data) {
+    if (result[d.date]) {
+      result[d.date] += 1
+    } else {
+      result[d.date] = 1
+    }
+  }
+  return result
 }

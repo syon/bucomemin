@@ -36,6 +36,7 @@ export default {
   mounted() {
     this.getTotalStars()
     this.getFavorites()
+    this.$store.dispatch('profile/load', { user: 'Dy66 ' })
   },
   methods: {
     async getTotalStars() {
