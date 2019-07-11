@@ -68,6 +68,7 @@ export default {
         data: '/data.json',
         afterLoadData: this.parser,
         legend: [1, 5, 10],
+        displayLegend: false,
         tooltip: true
       })
     },
@@ -109,19 +110,19 @@ export default {
   padding: 2px 4px;
 }
 
-.graph-rect.q0 {
+.cal-heatmap-container .q0 {
   fill: hsl(360, 14%, 93%); /* hsl(216, 14%, 93%) */
 }
-.graph-rect.q1 {
+.cal-heatmap-container .q1 {
   fill: hsl(224, 62%, 72%); /* hsl(80, 62%, 72%) */
 }
-.graph-rect.q2 {
+.cal-heatmap-container .q2 {
   fill: hsl(256, 45%, 61%); /* hsl(112, 45%, 61%) */
 }
-.graph-rect.q3 {
+.cal-heatmap-container .q3 {
   fill: hsl(276, 63%, 37%); /* hsl(132, 63%, 37%) */
 }
-.graph-rect.q4 {
+.cal-heatmap-container .q4 {
   fill: hsl(276, 59%, 24%); /* hsl(132, 59%, 24%) */
 }
 </style>
