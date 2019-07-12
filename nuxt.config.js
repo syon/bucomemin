@@ -27,7 +27,7 @@ export default {
   /*
    ** Plugins to load before mounting the App
    */
-  plugins: [],
+  plugins: ['~/plugins/iview.js'],
 
   /*
    ** Nuxt.js modules
@@ -51,6 +51,14 @@ export default {
      ** You can extend webpack config here
      */
     extend(config, ctx) {
+      // iView
+      config.module.rules.push({
+        test: /\.vue$/,
+        loader: 'iview-loader',
+        options: {
+          prefix: false
+        }
+      })
       // Run ESLint on save
       if (ctx.isDev && ctx.isClient) {
         config.module.rules.push({
