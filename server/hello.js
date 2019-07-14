@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
   dg('==== hello.js ====')
   const results = await MyHatebu.getBookmarks({ user })
   const jsonStr = JSON.stringify(results, null, 2)
-  const file = bucket.file(`users/${user}.json`)
+  const file = bucket.file(`users/recent/${user}.json`)
   await file.save(jsonStr)
   res.end('Hello!')
 }

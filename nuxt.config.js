@@ -1,3 +1,7 @@
+import dotenv from 'dotenv'
+
+dotenv.config()
+
 export default {
   mode: 'universal',
 
@@ -14,6 +18,16 @@ export default {
       { hid: 'description', name: 'description', content: 'the description.' }
     ],
     link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+  },
+
+  env: {
+    FIREBASE_CLIENT_API_KEY: process.env.FIREBASE_CLIENT_API_KEY,
+    FIREBASE_CLIENT_AUTH_DOMAIN: process.env.FIREBASE_CLIENT_AUTH_DOMAIN,
+    FIREBASE_CLIENT_DATABASE_URL: process.env.FIREBASE_CLIENT_DATABASE_URL,
+    FIREBASE_CLIENT_MESSAGING_SENDER_ID:
+      process.env.FIREBASE_CLIENT_MESSAGING_SENDER_ID,
+    FIREBASE_CLIENT_PROJECT_ID: process.env.FIREBASE_CLIENT_PROJECT_ID,
+    FIREBASE_CLIENT_STORAGE_BUCKET: process.env.FIREBASE_CLIENT_STORAGE_BUCKET
   },
 
   /*

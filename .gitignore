@@ -84,5 +84,6 @@ dist
 sw.*
 
 # app
-batch/data/*.json
+.env
 .secret
+batch/data/*.json
