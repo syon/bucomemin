@@ -85,3 +85,4 @@ sw.*
 
 # app
 batch/data/*.json
+.secret
