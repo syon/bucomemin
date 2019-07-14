@@ -5,7 +5,10 @@ dotenv.config()
 export default {
   mode: 'universal',
 
-  serverMiddleware: [{ path: '/hello', handler: '~/server/hello' }],
+  serverMiddleware: [
+    { path: '/hello', handler: '~/server/hello' },
+    { path: '/analyze', handler: '~/server/analyze' }
+  ],
 
   /*
    ** Headers of the page

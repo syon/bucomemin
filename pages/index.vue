@@ -57,6 +57,7 @@ export default {
   data() {
     return {
       user: 'Dy66',
+      datasetUrl: '',
       count: {},
       favorites: []
     }
@@ -66,10 +67,13 @@ export default {
       return Hatena.User.getProfileImageURL(this.user)
     }
   },
-  mounted() {
+  async mounted() {
     this.getTotalStars()
     this.getFavorites()
-    this.$store.dispatch('profile/load', { user: this.user })
+    const datasetUrl = await this.$store.dispatch('profile/detectDatasetURL', {
+      user: this.user
+    })
+    this.datasetUrl = datasetUrl
     this.drawHeatmap()
   },
   methods: {
@@ -84,7 +88,7 @@ export default {
         weekStartOnMonday: false,
         cellSize: 10,
         cellPadding: 1,
-        data: '/data.json',
+        data: this.datasetUrl,
         afterLoadData: this.parser,
         legend: [1, 5, 10],
         displayLegend: false,
@@ -95,7 +99,8 @@ export default {
     },
     parser(data) {
       const stats = {}
-      Object.entries(data).forEach(([k, v]) => {
+      const calendarData = data.calendarData
+      Object.entries(calendarData).forEach(([k, v]) => {
         const timestamp = new Date(k).getTime() / 1000
         stats[timestamp] = v
       })

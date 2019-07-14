@@ -1,10 +1,8 @@
 import debug from 'debug'
-import axios from 'axios'
 
-import dataset from '~/store/dataset/Dy66.json'
 import firebase from '@/classes/firebase-client'
 
-const dg = debug('store:profile')
+const dg = debug('app:store:profile')
 
 export const state = () => ({
   dataset: {}
@@ -19,23 +17,12 @@ export const mutations = {
 }
 
 export const actions = {
-  load({ commit }, payload) {
-    dg('[#load]--------')
-    dg(firebase)
-    const storage = firebase.storage()
-    const ref = storage.ref('users/analyze/Dy66.json')
-    ref
-      .getDownloadURL()
-      .then(url => {
-        return axios.get(url)
-      })
-      .then(res => {
-        const data = res.data
-        console.log(data)
-      })
+  async detectDatasetURL(_, payload) {
     const { user } = payload
-    dg({ user, dataset })
-    commit('setDataset', { user, dataset })
-    dg('--------[#load]')
+    const storage = firebase.storage()
+    const ref = storage.ref(`users/analyze/${user}.json`)
+    const url = await ref.getDownloadURL()
+    dg(url)
+    return url
   }
 }
