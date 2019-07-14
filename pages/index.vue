@@ -11,14 +11,24 @@
 
       <hr />
 
-      <Circle :percent="81" :size="80" dashboard stroke-color="#03a3de">
-        <span style="font-size:18px">81%</span>
+      <Circle
+        :percent="commentRate"
+        :size="80"
+        dashboard
+        stroke-color="#03a3de"
+      >
+        <span style="font-size:18px">{{ commentRate }}%</span>
       </Circle>
-      <Circle :percent="44" :size="80" dashboard stroke-color="#f5a623">
-        <span style="font-size:18px">44%</span>
+      <Circle
+        :percent="starredRate"
+        :size="80"
+        dashboard
+        stroke-color="#f5a623"
+      >
+        <span style="font-size:18px">{{ starredRate }}%</span>
       </Circle>
-      <Circle :percent="17" :size="80" dashboard stroke-color="#5279E7">
-        <span style="font-size:18px">17%</span>
+      <Circle :percent="anondRate" :size="80" dashboard stroke-color="#5279E7">
+        <span style="font-size:18px">{{ anondRate }}%</span>
       </Circle>
 
       <hr />
@@ -38,6 +48,7 @@
 
 <script>
 import Hatena from 'js-hatena'
+import { mapState } from 'vuex'
 
 export default {
   head() {
@@ -57,13 +68,18 @@ export default {
   },
   data() {
     return {
-      user: 'syonx',
+      user: 'Dy66',
       datasetUrl: '',
       count: {},
       favorites: []
     }
   },
   computed: {
+    ...mapState('profile', {
+      commentRate: state => state.commentRate,
+      starredRate: state => state.starredRate,
+      anondRate: state => state.anondRate
+    }),
     avatarUrl() {
       return Hatena.User.getProfileImageURL(this.user)
     }
