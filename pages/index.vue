@@ -89,6 +89,7 @@ export default {
         legend: [1, 5, 10],
         displayLegend: false,
         domainLabelFormat: '',
+        domainGutter: 0,
         tooltip: true
       })
     },
