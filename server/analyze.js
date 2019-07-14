@@ -1,3 +1,4 @@
+const qs = require('qs')
 const debug = require('debug')
 const { storage } = require('./firebaseAdmin')
 
@@ -5,10 +6,12 @@ debug.enable('app:*')
 const dg = debug('app:analyze')
 const bucket = storage.bucket('gs://bmin-faf7e.appspot.com/')
 
-const user = 'Dy66'
-
 module.exports = async (req, res, next) => {
   dg('==== analyze.js ====')
+  // TODO: Decode Username ???
+  const params = qs.parse(req.url.replace(/^\/\?/, ''))
+  dg(params)
+  const { user } = params
   const file = bucket.file(`users/recent/${user}.json`)
   const buf = await file.download()
   const jsonStr = buf.toString()
@@ -24,7 +27,8 @@ module.exports = async (req, res, next) => {
   const fileA = bucket.file(`users/analyze/${user}.json`)
   await fileA.save(jsonStrW)
   await fileA.setMetadata({ metadata: 'application/json' })
-  res.end('Analyze!')
+  res.writeHead(301, { Location: '/' })
+  res.end()
 }
 
 function calcCommentRate(data) {

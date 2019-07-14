@@ -17,11 +17,19 @@ export const mutations = {
 }
 
 export const actions = {
+  orderScrape(_, payload) {
+    const { user } = payload
+    // const res = await axios.get(`/hello?user=${user}`)
+    window.location = `/hello?user=${user}`
+  },
   async detectDatasetURL(_, payload) {
     const { user } = payload
     const storage = firebase.storage()
     const ref = storage.ref(`users/analyze/${user}.json`)
-    const url = await ref.getDownloadURL()
+    const url = await ref.getDownloadURL().catch(e => {
+      dg(e)
+      return ''
+    })
     dg(url)
     return url
   }

@@ -26,6 +26,7 @@
     "js-hatena": "github:syon/js-hatena",
     "nuxt": "2.8.1",
     "puppeteer": "1.18.1",
+    "qs": "6.7.0",
     "request": "2.88.0",
     "request-promise-native": "1.0.7"
   },

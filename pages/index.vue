@@ -7,6 +7,7 @@
       <hr />
 
       <h1 class="totalStars">★ {{ count.total }}</h1>
+      <button @click="order">order</button>
 
       <hr />
 
@@ -56,7 +57,7 @@ export default {
   },
   data() {
     return {
-      user: 'Dy66',
+      user: 'syonx',
       datasetUrl: '',
       count: {},
       favorites: []
@@ -77,9 +78,14 @@ export default {
     this.drawHeatmap()
   },
   methods: {
+    async order() {
+      const user = this.user
+      await this.$store.dispatch('profile/orderScrape', { user })
+    },
     drawHeatmap() {
       const cal = new window.CalHeatMap()
       const now = new Date()
+      if (!this.datasetUrl) return
       cal.init({
         domain: 'month',
         subDomain: 'day',
