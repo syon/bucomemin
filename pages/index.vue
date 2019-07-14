@@ -2,18 +2,35 @@
   <section class="container">
     <div>
       <img :src="avatarUrl" />
-      <h1 class="title">
-        {{ count.total }}
-      </h1>
-      <h2 class="subtitle">
-        My groovy Nuxt.js project
-      </h2>
+      <h1>{{ user }}</h1>
+
+      <hr />
+
+      <h1 class="totalStars">★ {{ count.total }}</h1>
+
+      <hr />
+
+      <Circle :percent="81" :size="80" dashboard stroke-color="#03a3de">
+        <span style="font-size:18px">81%</span>
+      </Circle>
+      <Circle :percent="44" :size="80" dashboard stroke-color="#f5a623">
+        <span style="font-size:18px">44%</span>
+      </Circle>
+      <Circle :percent="17" :size="80" dashboard stroke-color="#5279E7">
+        <span style="font-size:18px">17%</span>
+      </Circle>
+
+      <hr />
+
+      <div id="cal-heatmap"></div>
+
+      <hr />
+
       <div>
         <a v-for="f in favorites" :key="f.name" href="#" class="fav">
           {{ f.name }}
         </a>
       </div>
-      <div id="cal-heatmap"></div>
     </div>
   </section>
 </template>
@@ -39,36 +56,39 @@ export default {
   },
   data() {
     return {
+      user: 'Dy66',
       count: {},
       favorites: []
     }
   },
   computed: {
     avatarUrl() {
-      const userId = 'Dy66'
-      return Hatena.User.getProfileImageURL(userId)
+      return Hatena.User.getProfileImageURL(this.user)
     }
   },
   mounted() {
     this.getTotalStars()
     this.getFavorites()
-    this.$store.dispatch('profile/load', { user: 'Dy66 ' })
+    this.$store.dispatch('profile/load', { user: this.user })
     this.drawHeatmap()
   },
   methods: {
     drawHeatmap() {
       const cal = new window.CalHeatMap()
+      const now = new Date()
       cal.init({
-        domain: 'year',
+        domain: 'month',
         subDomain: 'day',
-        range: 1,
+        range: 12,
+        start: new Date(now.getFullYear(), now.getMonth() - 11),
         weekStartOnMonday: false,
-        cellSize: 12,
-        cellPadding: 3,
+        cellSize: 10,
+        cellPadding: 1,
         data: '/data.json',
         afterLoadData: this.parser,
         legend: [1, 5, 10],
         displayLegend: false,
+        domainLabelFormat: '',
         tooltip: true
       })
     },
@@ -81,15 +101,13 @@ export default {
       return stats
     },
     async getTotalStars() {
-      const userId = 'Dy66'
-      const uri = `http://b.hatena.ne.jp/${userId}/`
+      const uri = `http://b.hatena.ne.jp/${this.user}/`
       const res = await Hatena.Star.getTotalCount({ uri })
       this.count = res.count
       this.count.total = res.star_count
     },
     async getFavorites() {
-      const userId = 'Dy66'
-      const res = await Hatena.User.getFavorites(userId)
+      const res = await Hatena.User.getFavorites(this.user)
       this.favorites = res.favorites
     }
   }
@@ -106,10 +124,23 @@ export default {
   text-align: center;
 }
 
+hr {
+  margin: 2rem 0;
+  border: 0;
+}
+
 .fav {
   padding: 2px 4px;
 }
 
+.totalStars {
+  color: #f5a623;
+}
+
+#cal-heatmap {
+  display: flex;
+  justify-content: center;
+}
 .cal-heatmap-container .q0 {
   fill: hsl(360, 14%, 93%); /* hsl(216, 14%, 93%) */
 }
