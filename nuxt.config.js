@@ -1,6 +1,8 @@
 export default {
   mode: 'universal',
 
+  serverMiddleware: [{ path: '/hello', handler: '~/server/hello' }],
+
   /*
    ** Headers of the page
    */
