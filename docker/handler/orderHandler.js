@@ -9,9 +9,11 @@ module.exports = async () => {
     json: true
   }
   orders.forEach(async x => {
+    const user = x.id
     options.uri = 'http://localhost:3444/recent'
-    options.body = { user: x.id }
+    options.body = { user }
     await request(options)
+    await removeOrder(user)
   })
 }
 
@@ -34,4 +36,13 @@ async function fetchOrders() {
     })
   dg(result)
   return result
+}
+
+async function removeOrder(id) {
+  return await db.collection('orders')
+    .doc(id)
+    .delete()
+    .catch(error => {
+      dg('Error removing document: ', error)
+    })
 }
