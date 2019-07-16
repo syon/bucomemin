@@ -96,7 +96,7 @@ export default {
   methods: {
     async order() {
       const user = this.user
-      await this.$store.dispatch('profile/orderScrape', { user })
+      await this.$store.dispatch('profile/addOrder', { user })
     },
     drawHeatmap() {
       const cal = new window.CalHeatMap()

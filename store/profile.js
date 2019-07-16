@@ -1,7 +1,7 @@
 import debug from 'debug'
 import axios from 'axios'
 
-import firebase from '@/classes/firebase-client'
+import fb from '@/classes/firebase-client'
 
 const dg = debug('app:store:profile')
 
@@ -22,15 +22,21 @@ export const mutations = {
 }
 
 export const actions = {
-  async orderScrape(_, payload) {
+  async addOrder(_, payload) {
     const { user } = payload
-    const res = await axios.get(`/scrape?user=${user}`)
-    window.location = res.responseURL
+    const obj = {
+      timestamp: new Date().getTime()
+    }
+    await fb.db
+      .doc(`orders/${user}`)
+      .set(obj)
+      .catch(e => {
+        console.error(e)
+      })
   },
   async detectDatasetURL({ commit }, payload) {
     const { user } = payload
-    const storage = firebase.storage()
-    const ref = storage.ref(`users/analyze/${user}.json`)
+    const ref = fb.storage.ref(`users/analyze/${user}.json`)
     const url = await ref.getDownloadURL().catch(e => {
       dg(e)
       return ''
