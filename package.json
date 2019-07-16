@@ -24,6 +24,7 @@
     "firebase-admin": "8.2.0",
     "iview": "3.4.2",
     "js-hatena": "github:syon/js-hatena",
+    "moment": "2.24.0",
     "nuxt": "2.8.1",
     "puppeteer": "1.18.1",
     "qs": "6.7.0",

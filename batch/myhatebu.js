@@ -1,5 +1,6 @@
 const request = require('request-promise-native')
 const cheerio = require('cheerio')
+const moment = require('moment')
 const dg = require('debug')('app:myhatebu')
 const Hatena = require('./hatena')
 // const { scrapeHatebuPageData } = require('./bHatena')
@@ -16,19 +17,25 @@ const options = {
 async function getBookmarks({ user }) {
   dg('====[extractEntries]========================')
   let recentBookmarks = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 20; i++) {
     dg('......', i)
     const num = i + 1
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
     const list = await extractEntries(options)
     recentBookmarks = recentBookmarks.concat(list)
     dg(recentBookmarks.length)
+    const old = recentBookmarks.find(x => {
+      const oneYearAgo = moment().subtract(1, 'year')
+      return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
+    })
+    if (old) break
   }
 
   dg('====[getBucomeDetailFromAPI]========================')
   const recentBookmarksEx = []
-  for (const entry of recentBookmarks) {
-    dg(entry.url)
+  for (let i = 0; i < recentBookmarks.length; i++) {
+    const entry = recentBookmarks[i]
+    dg(`[${i + 1}/${recentBookmarks.length}] (${entry.date}) ${entry.url}`)
     const bucome = await Hatena.Custom.getBucomeDetailFromAPI(entry.url, user)
     bucome.stars = bucome.stars || []
     recentBookmarksEx.push({ ...entry, ...bucome })

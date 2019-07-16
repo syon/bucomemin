@@ -4,12 +4,12 @@ const MyHatebu = require('../batch/myhatebu')
 const { storage } = require('./firebaseAdmin')
 
 debug.enable('app:*')
-const dg = debug('app:hello')
+const dg = debug('app:scrape')
 const bucket = storage.bucket('gs://bmin-faf7e.appspot.com/')
 
 module.exports = async (req, res, next) => {
-  dg('==== hello.js ====')
-  // URL: /hello?user=sample
+  dg('==== scrape.js ====')
+  // URL: /scrape?user=sample
   const params = qs.parse(req.url.replace(/^\/\?/, ''))
   dg(params)
   const { user } = params

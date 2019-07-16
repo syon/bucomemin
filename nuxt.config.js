@@ -6,7 +6,7 @@ export default {
   mode: 'universal',
 
   serverMiddleware: [
-    { path: '/hello', handler: '~/server/hello' },
+    { path: '/scrape', handler: '~/server/scrape' },
     { path: '/analyze', handler: '~/server/analyze' }
   ],
 
