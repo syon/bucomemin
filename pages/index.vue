@@ -3,6 +3,9 @@
     <div>
       <img :src="avatarUrl" />
       <h1>{{ user }}</h1>
+      <div>
+        <input v-model="iUser" type="text" @keyup.enter="switchUser" />
+      </div>
 
       <hr />
 
@@ -69,9 +72,11 @@ export default {
   data() {
     return {
       user: 'aukusoe',
+      iUser: '',
       datasetUrl: '',
       count: {},
-      favorites: []
+      favorites: [],
+      cal: null
     }
   },
   computed: {
@@ -84,25 +89,37 @@ export default {
       return Hatena.User.getProfileImageURL(this.user)
     }
   },
-  async mounted() {
-    this.getTotalStars()
-    this.getFavorites()
-    const datasetUrl = await this.$store.dispatch('profile/detectDatasetURL', {
-      user: this.user
-    })
-    this.datasetUrl = datasetUrl
-    this.drawHeatmap()
+  mounted() {
+    this.prepareHeatmap()
+    this.refresh()
   },
   methods: {
+    async refresh() {
+      this.getTotalStars()
+      this.getFavorites()
+      const datasetUrl = await this.$store.dispatch(
+        'profile/detectDatasetURL',
+        {
+          user: this.user
+        }
+      )
+      this.datasetUrl = datasetUrl
+      this.drawHeatmap()
+    },
+    switchUser() {
+      this.user = this.iUser
+      this.iUser = ''
+      this.refresh()
+    },
     async order() {
       const user = this.user
       await this.$store.dispatch('profile/addOrder', { user })
     },
-    drawHeatmap() {
-      const cal = new window.CalHeatMap()
+    prepareHeatmap() {
+      this.cal = new window.CalHeatMap()
       const now = new Date()
       if (!this.datasetUrl) return
-      cal.init({
+      this.cal.init({
         domain: 'month',
         subDomain: 'day',
         range: 12,
@@ -118,6 +135,10 @@ export default {
         domainGutter: 0,
         tooltip: true
       })
+    },
+    drawHeatmap() {
+      // TODO: remove this.parser
+      this.cal.update(this.datasetUrl)
     },
     parser(data) {
       const stats = {}
