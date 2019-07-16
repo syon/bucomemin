@@ -5,11 +5,6 @@ dotenv.config()
 export default {
   mode: 'universal',
 
-  serverMiddleware: [
-    { path: '/scrape', handler: '~/server/scrape' },
-    { path: '/analyze', handler: '~/server/analyze' }
-  ],
-
   /*
    ** Headers of the page
    */

@@ -17,7 +17,7 @@ const options = {
 async function getBookmarks({ user }) {
   dg('====[extractEntries]========================')
   let recentBookmarks = []
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 2; i++) {
     dg('......', i)
     const num = i + 1
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
