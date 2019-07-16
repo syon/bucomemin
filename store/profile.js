@@ -22,10 +22,10 @@ export const mutations = {
 }
 
 export const actions = {
-  orderScrape(_, payload) {
+  async orderScrape(_, payload) {
     const { user } = payload
-    // const res = await axios.get(`/scrape?user=${user}`)
-    window.location = `/scrape?user=${user}`
+    const res = await axios.get(`/scrape?user=${user}`)
+    window.location = res.responseURL
   },
   async detectDatasetURL({ commit }, payload) {
     const { user } = payload

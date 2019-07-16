@@ -68,7 +68,7 @@ export default {
   },
   data() {
     return {
-      user: 'Dy66',
+      user: 'aukusoe',
       datasetUrl: '',
       count: {},
       favorites: []
