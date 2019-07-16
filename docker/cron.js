@@ -5,6 +5,8 @@ const CronJob = require('cron').CronJob
 const dg = debug('app:cron')
 debug.enable('app:*')
 
+const orderHandler = require('./handler/orderHandler')
+
 dg('******** Hello! This is cron.js ********')
 
 /**
@@ -12,12 +14,13 @@ dg('******** Hello! This is cron.js ********')
  */
 // eslint-disable-next-line
 new CronJob(
-  '0 30 * * * *',
+  '0 30 * * * *', // 毎時 30 分 00 秒
+  // '*/10 * * * * *', // 10秒置き
   async () => {
     dg('\n\nStart cron job...')
-    await 0
-    // await news()
-    // await nailWorker()
+    await orderHandler().catch(e => {
+      dg(e)
+    })
     dg('Done!', new Date().toLocaleString(), '\n\n')
   },
   null,

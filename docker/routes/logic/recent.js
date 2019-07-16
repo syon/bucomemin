@@ -1,7 +1,7 @@
 const qs = require('qs')
 const debug = require('debug')
 const MyHatebu = require('./myhatebu')
-const { storage } = require('./firebaseAdmin')
+const { storage } = require('../../firebaseAdmin')
 
 debug.enable('app:*')
 const dg = debug('app:recent')
@@ -19,6 +19,7 @@ module.exports = class Recent {
   }
 
   static async calcTheRate({ user }) {
+    dg(`==== [#calcTheRate] (${user}) ====`)
     const file = bucket.file(`users/recent/${user}.json`)
     const buf = await file.download()
     const jsonStr = buf.toString()
