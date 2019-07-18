@@ -4,6 +4,9 @@
   "description": "My groovy Nuxt.js project",
   "author": "syon",
   "private": true,
+  "engines" : {
+    "node" : ">=10.15.0"
+  },
   "scripts": {
     "batch:scrape": "node batch/scrape.js",
     "batch:analyze": "node batch/analyze.js",
