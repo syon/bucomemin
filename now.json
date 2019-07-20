@@ -1,25 +1,25 @@
 {
   "version": 2,
   "scope": "bmin",
+  "build": {
+    "env": {
+      "FIREBASE_CLIENT_API_KEY": "@apikey",
+      "FIREBASE_CLIENT_AUTH_DOMAIN": "@authdomain",
+      "FIREBASE_CLIENT_DATABASE_URL": "@databaseurl",
+      "FIREBASE_CLIENT_PROJECT_ID": "@projectid",
+      "FIREBASE_CLIENT_STORAGE_BUCKET": "@storagebucket",
+      "FIREBASE_CLIENT_MESSAGING_SENDER_ID": "@messagingsenderid"
+    }
+  },
   "builds": [
     {
       "src": "nuxt.config.js",
       "use": "@nuxtjs/now-builder",
-      "config": {
-        "serverFiles": ["server-middleware/**"]
-      }
+      "config": {}
     }
   ],
   "routes": [
     { "src": "/_nuxt/.+", "headers": { "cache-control": "s-maxage=31536000" } },
     { "src": "/(.*)", "dest": "/" }
-  ],
-  "env": {
-    "FIREBASE_CLIENT_API_KEY": "@apikey",
-    "FIREBASE_CLIENT_AUTH_DOMAIN": "@authdomain",
-    "FIREBASE_CLIENT_DATABASE_URL": "@databaseurl",
-    "FIREBASE_CLIENT_PROJECT_ID": "@projectid",
-    "FIREBASE_CLIENT_STORAGE_BUCKET": "@storagebucket",
-    "FIREBASE_CLIENT_MESSAGING_SENDER_ID": "@messagingsenderid"
-  }
+  ]
 }
