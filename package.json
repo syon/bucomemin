@@ -4,8 +4,8 @@
   "description": "My groovy Nuxt.js project",
   "author": "syon",
   "private": true,
-  "engines" : {
-    "node" : ">=10.15.0"
+  "engines": {
+    "node": ">=10.15.0"
   },
   "scripts": {
     "batch:scrape": "node batch/scrape.js",
@@ -22,8 +22,9 @@
   "dependencies": {
     "@nuxtjs/axios": "5.5.4",
     "cheerio": "1.0.0-rc.3",
+    "core-js": "2.6.9",
     "cross-env": "5.2.0",
-    "firebase": "6.3.0",
+    "firebase": "6.3.1",
     "iview": "3.4.2",
     "js-hatena": "github:syon/js-hatena",
     "nuxt": "2.8.1"

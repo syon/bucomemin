@@ -85,5 +85,6 @@ sw.*
 
 # app
 .env
+.envrc
 .secret
 batch/data/*.json
