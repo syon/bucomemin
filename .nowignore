@@ -1,5 +1,5 @@
 .nuxt
-node_modules
+node_modules*
 *.log
 README.md
 docker

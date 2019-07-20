@@ -88,3 +88,8 @@ sw.*
 .envrc
 .secret
 batch/data/*.json
+
+# Now dev
+node_modules
+node_modules_dev/
+node_modules_prod/
