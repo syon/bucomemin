@@ -57,21 +57,6 @@ import { mapState } from 'vuex'
 const dg = debug('app:id/_id')
 
 export default {
-  head() {
-    return {
-      script: [
-        { src: '//d3js.org/d3.v3.min.js' },
-        { src: '//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js' },
-        { src: '' }
-      ],
-      link: [
-        {
-          rel: 'stylesheet',
-          href: '//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css'
-        }
-      ]
-    }
-  },
   data() {
     return {
       iUser: '',
