@@ -1,6 +1,5 @@
 {
-  "version": 2,
-  "scope": "bmin",
+  "version": 1,
   "build": {
     "env": {
       "FIREBASE_CLIENT_API_KEY": "@apikey",
@@ -10,16 +9,5 @@
       "FIREBASE_CLIENT_STORAGE_BUCKET": "@storagebucket",
       "FIREBASE_CLIENT_MESSAGING_SENDER_ID": "@messagingsenderid"
     }
-  },
-  "builds": [
-    {
-      "src": "nuxt.config.js",
-      "use": "@nuxtjs/now-builder",
-      "config": {}
-    }
-  ],
-  "routes": [
-    { "src": "/_nuxt/.+", "headers": { "cache-control": "s-maxage=31536000" } },
-    { "src": "/(.*)", "dest": "/" }
-  ]
+  }
 }
