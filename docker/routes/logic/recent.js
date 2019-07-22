@@ -83,10 +83,11 @@ function calcAnondRate(data) {
 function makeCalendarData(data) {
   const result = {}
   for (const d of data) {
-    if (result[d.date]) {
-      result[d.date] += 1
+    const key = new Date(d.date).getTime() / 1000
+    if (result[key]) {
+      result[key] += 1
     } else {
-      result[d.date] = 1
+      result[key] = 1
     }
   }
   return result

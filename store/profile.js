@@ -34,9 +34,9 @@ export const actions = {
         console.error(e)
       })
   },
-  async detectDatasetURL({ commit }, payload) {
+  async fetchDataset({ commit }, payload) {
     const { user } = payload
-    const ref = fb.storage.ref(`users/analyze/${user}.json`)
+    const ref = fb.storage.ref(`analyze/${user}.json`)
     const url = await ref.getDownloadURL().catch(e => {
       dg(e)
       return ''
@@ -45,6 +45,14 @@ export const actions = {
       return res.data
     })
     commit('setDataset', dataset)
+  },
+  async detectDatasetURL(_, payload) {
+    const { user } = payload
+    const ref = fb.storage.ref(`calendar/${user}.json`)
+    const url = await ref.getDownloadURL().catch(e => {
+      dg(e)
+      return ''
+    })
     dg(url)
     return url
   }
