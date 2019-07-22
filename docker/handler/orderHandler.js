@@ -1,8 +1,9 @@
 const request = require('request-promise-native')
-const { db } = require('../firebaseAdmin')
 const dg = require('debug')('app:orderHandler')
+const { db } = require('../firebaseAdmin')
 
 module.exports = async () => {
+  dg('[#orderHandler] start')
   const orders = await fetchOrders()
   const options = {
     method: 'POST',
@@ -12,8 +13,10 @@ module.exports = async () => {
     const user = x.id
     options.uri = 'http://localhost:3444/recent'
     options.body = { user }
+    dg('[#orderHandler] Request:', user)
     await request(options)
     await removeOrder(user)
+    dg('[#orderHandler] Success:', user)
   })
 }
 
@@ -39,7 +42,8 @@ async function fetchOrders() {
 }
 
 async function removeOrder(id) {
-  return await db.collection('orders')
+  return await db
+    .collection('orders')
     .doc(id)
     .delete()
     .catch(error => {

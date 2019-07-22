@@ -6,6 +6,7 @@
     "node": ">=10.15.0"
   },
   "scripts": {
+    "try-order": "node try/order.js",
     "cron": "node cron.js",
     "server": "DEBUG=app:* PORT=3444 node ./bin/www",
     "start": "nf start",

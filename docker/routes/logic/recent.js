@@ -1,7 +1,6 @@
-const qs = require('qs')
 const debug = require('debug')
-const MyHatebu = require('./myhatebu')
 const { storage } = require('../../firebaseAdmin')
+const MyHatebu = require('./myhatebu')
 
 debug.enable('app:*')
 const dg = debug('app:recent')
@@ -12,7 +11,7 @@ module.exports = class Recent {
     const { user } = params
     const results = await MyHatebu.getBookmarks({ user })
     const jsonStr = JSON.stringify(results, null, 2)
-    const file = bucket.file(`users/recent/${user}.json`)
+    const file = bucket.file(`recent/${user}.json`)
     await file.save(jsonStr)
     // TODO: Decode Username ???
     await Recent.calcTheRate({ user })
@@ -20,21 +19,29 @@ module.exports = class Recent {
 
   static async calcTheRate({ user }) {
     dg(`==== [#calcTheRate] (${user}) ====`)
-    const file = bucket.file(`users/recent/${user}.json`)
+    const file = bucket.file(`recent/${user}.json`)
     const buf = await file.download()
     const jsonStr = buf.toString()
     const data = JSON.parse(jsonStr)
+
     const commentRate = calcCommentRate(data)
     const starredRate = calcStarredRate(data)
     // const rankinRate = calcRankinRate(data, user)
     const anondRate = calcAnondRate(data)
+    const result = { commentRate, starredRate, anondRate }
+    await Recent.saveFileToBucket(result, `analyze/${user}.json`)
+
     const calendarData = makeCalendarData(data)
-    const result = { commentRate, starredRate, anondRate, calendarData }
-    console.log(result)
-    const jsonStrW = JSON.stringify(result, null, 2)
-    const fileA = bucket.file(`users/analyze/${user}.json`)
-    await fileA.save(jsonStrW)
-    await fileA.setMetadata({ metadata: 'application/json' })
+    await Recent.saveFileToBucket(calendarData, `calendar/${user}.json`)
+  }
+
+  static async saveFileToBucket(data, path) {
+    dg('[#saveFileToBucket]', path)
+    const jsonStr = JSON.stringify(data, null, 2)
+    const file = bucket.file(path)
+    await file.save(jsonStr)
+    await file.setMetadata({ metadata: 'application/json' })
+    dg('[#saveFileToBucket] Success:', data)
   }
 }
 
@@ -55,16 +62,16 @@ function calcStarredRate(data) {
   return Math.floor((starred.length / commented.length) * 100)
 }
 
-function calcRankinRate(data, user) {
-  const commented = data.filter(x => {
-    return x.comment.trim().length > 0
-  })
-  const rankin = commented.filter(x => {
-    const isRankin = !!x.bucome.populars[user]
-    return isRankin
-  })
-  return Math.floor((rankin.length / commented.length) * 100)
-}
+// function calcRankinRate(data, user) {
+//   const commented = data.filter(x => {
+//     return x.comment.trim().length > 0
+//   })
+//   const rankin = commented.filter(x => {
+//     const isRankin = !!x.bucome.populars[user]
+//     return isRankin
+//   })
+//   return Math.floor((rankin.length / commented.length) * 100)
+// }
 
 function calcAnondRate(data) {
   const anond = data.filter(x => {
