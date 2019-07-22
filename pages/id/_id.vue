@@ -110,16 +110,10 @@ export default {
     async refresh() {
       this.getTotalStars()
       this.getFavorites()
-      await this.$store.dispatch('profile/fetchDataset', { user: this.user })
-      const datasetUrl = await this.$store.dispatch(
-        'profile/detectDatasetURL',
-        {
-          user: this.user
-        }
-      )
-      this.datasetUrl = datasetUrl
-      // eslint-disable-next-line promise/param-names
-      // await new Promise(r => setTimeout(r, 3000))
+      const user = this.user
+      await this.$store.dispatch('profile/fetchDataset', { user })
+      const u = await this.$store.dispatch('profile/detectDatasetURL', { user })
+      this.datasetUrl = u
       this.drawHeatmap()
     },
     switchUser() {
@@ -135,11 +129,10 @@ export default {
       if (!process.browser) {
         return
       }
-      this.cal = new window.CalHeatMap()
+      const cal = new window.CalHeatMap()
       if (!this.datasetUrl) return
-      dg('[#this.cal.init]', this.datasetUrl)
       const now = new Date()
-      this.cal.init({
+      cal.init({
         domain: 'month',
         subDomain: 'day',
         range: 12,
@@ -148,31 +141,12 @@ export default {
         cellSize: 10,
         cellPadding: 1,
         data: this.datasetUrl,
-        // data: {
-        //   '1563116400': 16,
-        //   '1563202800': 4,
-        //   '1563289200': 6,
-        //   '1563462000': 2,
-        //   '1563548400': 2,
-        //   '1563634800': 5,
-        //   '1563721200': 5
-        // },
-        // afterLoadData: this.parser,
         legend: [1, 5, 10],
         displayLegend: false,
         domainLabelFormat: '',
         domainGutter: 0,
         tooltip: true
       })
-    },
-    parser(data) {
-      const stats = {}
-      const calendarData = data.calendarData
-      Object.entries(calendarData).forEach(([k, v]) => {
-        const timestamp = new Date(k).getTime() / 1000
-        stats[timestamp] = v
-      })
-      return stats
     },
     async getTotalStars() {
       const uri = `http://b.hatena.ne.jp/${this.user}/`
