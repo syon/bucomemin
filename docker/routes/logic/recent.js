@@ -57,6 +57,7 @@ function calcStarredRate(data) {
     return x.comment.trim().length > 0
   })
   const starred = commented.filter(x => {
+    // TODO: 自分を除く
     return x.stars.length > 0
   })
   return Math.floor((starred.length / commented.length) * 100)

@@ -54,6 +54,7 @@ async function getBookmarks({ user }) {
 }
 
 async function extractEntries(options) {
+  // TODO: 本当にすべて取得できてる？ Ajaxあり
   return await request(options)
     .then(function($) {
       const list = $('.bookmark-item').map((i, el) => {
