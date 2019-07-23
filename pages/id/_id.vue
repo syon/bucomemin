@@ -3,9 +3,6 @@
     <div>
       <img :src="avatarUrl" />
       <h1>{{ user }}</h1>
-      <div>
-        <input v-model="iUser" type="text" @keyup.enter="switchUser" />
-      </div>
 
       <hr />
 
@@ -59,11 +56,9 @@ const dg = debug('app:id/_id')
 export default {
   data() {
     return {
-      iUser: '',
       datasetUrl: '',
       count: {},
-      favorites: [],
-      cal: null
+      favorites: []
     }
   },
   computed: {
@@ -100,11 +95,6 @@ export default {
       const u = await this.$store.dispatch('profile/detectDatasetURL', { user })
       this.datasetUrl = u
       this.drawHeatmap()
-    },
-    switchUser() {
-      this.user = this.iUser
-      this.iUser = ''
-      this.refresh()
     },
     async order() {
       const user = this.user

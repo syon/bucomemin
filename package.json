@@ -13,7 +13,6 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "now-dev": "nuxt",
     "now-deploy": "now",
     "now-alias": "now alias"
   },
