@@ -1,7 +1,7 @@
 <template>
   <section class="container">
     <div>
-      <img :src="avatarUrl" />
+      <img :class="$style.avatar" :src="avatarUrl" />
       <h1>{{ user }}</h1>
 
       <hr />
@@ -139,6 +139,14 @@ export default {
 }
 </script>
 
+<style module>
+.avatar {
+  width: 96px;
+  height: 96px;
+  border-radius: 3px;
+}
+</style>
+
 <style>
 .container {
   margin: 0 auto;
@@ -165,6 +173,7 @@ hr {
 #cal-heatmap {
   display: flex;
   justify-content: center;
+  min-height: 76px;
 }
 .cal-heatmap-container .q0 {
   fill: hsl(360, 14%, 93%); /* hsl(216, 14%, 93%) */
