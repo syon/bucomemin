@@ -28,7 +28,8 @@ module.exports = class Recent {
     const starredRate = calcStarredRate(data)
     // const rankinRate = calcRankinRate(data, user)
     const anondRate = calcAnondRate(data)
-    const result = { commentRate, starredRate, anondRate }
+    const sparkles = detectSparkleComments(data)
+    const result = { commentRate, starredRate, anondRate, sparkles }
     await Recent.saveFileToBucket(result, `analyze/${user}.json`)
 
     const calendarData = makeCalendarData(data)
@@ -79,6 +80,20 @@ function calcAnondRate(data) {
     return /^https:\/\/anond.hatelabo.jp/.test(x.url)
   })
   return Math.floor((anond.length / data.length) * 100)
+}
+
+function detectSparkleComments(data) {
+  const commented = data.filter(x => {
+    return x.comment.trim().length > 0
+  })
+  const starred = commented.filter(x => {
+    // TODO: 自分を除く
+    return x.stars.length > 0
+  })
+  starred.sort((a, b) => {
+    return b.stars.length - a.stars.length
+  })
+  return starred.slice(0, 3)
 }
 
 function makeCalendarData(data) {

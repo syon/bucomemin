@@ -8,7 +8,8 @@ const dg = debug('app:store:profile')
 export const state = () => ({
   commentRate: 0,
   starredRate: 0,
-  anondRate: 0
+  anondRate: 0,
+  sparkles: []
 })
 
 export const getters = {}
@@ -18,6 +19,7 @@ export const mutations = {
     state.commentRate = payload.commentRate
     state.starredRate = payload.starredRate
     state.anondRate = payload.anondRate
+    state.sparkles = payload.sparkles
   }
 }
 

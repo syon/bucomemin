@@ -37,6 +37,13 @@
 
       <hr />
 
+      <div v-for="(s, i) in sparkles" :key="i" href="#" class="sparkles">
+        <p>{{ s.comment }}</p>
+        <div>★ {{ s.stars.length }}</div>
+      </div>
+
+      <hr />
+
       <div>
         <a v-for="f in favorites" :key="f.name" href="#" class="fav">
           {{ f.name }}
@@ -65,7 +72,8 @@ export default {
     ...mapState('profile', {
       commentRate: state => state.commentRate,
       starredRate: state => state.starredRate,
-      anondRate: state => state.anondRate
+      anondRate: state => state.anondRate,
+      sparkles: state => state.sparkles
     }),
     avatarUrl() {
       return Hatena.User.getProfileImageURL(this.user)
