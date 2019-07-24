@@ -9,6 +9,7 @@ const bucket = storage.bucket('gs://bmin-faf7e.appspot.com/')
 module.exports = class Recent {
   static async main(params) {
     const { user } = params
+    // TODO: 月次取得
     const results = await MyHatebu.getBookmarks({ user })
     const jsonStr = JSON.stringify(results, null, 2)
     const file = bucket.file(`recent/${user}.json`)
@@ -29,8 +30,12 @@ module.exports = class Recent {
     // const rankinRate = calcRankinRate(data, user)
     const anondRate = calcAnondRate(data)
     const sparkles = detectSparkleComments(data)
+    // const dailyStars = makeDailyStars(data)
     const result = { commentRate, starredRate, anondRate, sparkles }
     await Recent.saveFileToBucket(result, `analyze/${user}.json`)
+
+    const bubble = makeBubble(data)
+    await Recent.saveFileToBucket(bubble, `bubble/${user}.json`)
 
     const calendarData = makeCalendarData(data)
     await Recent.saveFileToBucket(calendarData, `calendar/${user}.json`)
@@ -94,6 +99,37 @@ function detectSparkleComments(data) {
     return b.stars.length - a.stars.length
   })
   return starred.slice(0, 3)
+}
+
+// function makeDailyStars(data) {
+//   const commented = data.filter(x => {
+//     return x.comment.trim().length > 0
+//   })
+//   const starred = commented.filter(x => {
+//     // TODO: 自分を除く
+//     return x.stars.length > 0
+//   })
+//   const dailyStars = {}
+//   starred.forEach(b => {
+//     if (!dailyStars[b.date]) {
+//       dailyStars[b.date] = 0
+//     }
+//     dailyStars[b.date] += b.stars.length
+//   })
+//   return dailyStars
+// }
+
+function makeBubble(data) {
+  return data.map(x => {
+    return {
+      title: x.title,
+      users: x.users,
+      hatebu: x.hatebuPage,
+      timestamp: x.timestamp,
+      stars: x.stars.length,
+      comment: x.comment
+    }
+  })
 }
 
 function makeCalendarData(data) {

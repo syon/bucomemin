@@ -6,7 +6,8 @@
     "node": ">=10.15.0"
   },
   "scripts": {
-    "try-order": "node try/order.js",
+    "try-recentAnalyze": "node try/recentAnalyze.js",
+    "try-recentMain": "node try/recentMain.js",
     "cron": "node cron.js",
     "server": "DEBUG=app:* PORT=3444 node ./bin/www",
     "start": "nf start",
