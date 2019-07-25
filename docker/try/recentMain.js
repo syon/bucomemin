@@ -2,10 +2,10 @@ const debug = require('debug')
 const dg = debug('app:try')
 debug.enable('app:*')
 
-const Recent = require('../logic/recent')
+const Recent = require('../routes/logic/recent')
 
 ;(async () => {
-  const params = req.body
+  const params = { user: 'Dy66' }
   await Recent.main(params)
     .then(result => {
       res.json(result)

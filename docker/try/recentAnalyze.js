@@ -2,16 +2,16 @@ const debug = require('debug')
 const dg = debug('app:try')
 debug.enable('app:*')
 
-const Recent = require('../routes/logic/recent')
+const Analyze = require('../routes/logic/analyze')
 
 ;(async () => {
   const user = 'Dy66'
-  await Recent.calcTheRate({ user })
+  await Analyze.main({ user })
     .then(result => {
-      res.json(result)
+      dg(result)
     })
     .catch(e => {
-      res.status(500).send(e.toString())
+      dg(e)
     })
 })().catch(e => {
   // Deal with the fact the chain failed
