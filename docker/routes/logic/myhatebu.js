@@ -74,6 +74,10 @@ async function extractEntries(options) {
           $(el)
             .find('.centerarticle-users > a')
             .attr('href')
+        const eid = $(el)
+          .find('.centerarticle-reaction')
+          .attr('id')
+          .replace(/^bookmark-/, '')
         const date = $(el)
           .find('.centerarticle-reaction-timestamp')
           .text()
@@ -87,6 +91,7 @@ async function extractEntries(options) {
             .attr('href')
         // Twitter clicks needs ajax evaluation.
         return {
+          eid,
           title,
           url,
           users,
