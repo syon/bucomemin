@@ -14,6 +14,11 @@ const options = {
   }
 }
 
+/**
+ * はてブページからスクレイピング
+ * <停止条件>
+ * １年前に到達 or DB最新に到達
+ */
 async function getRecentBookmarks({ user }) {
   dg('====[extractEntries]========================')
   let recentBookmarks = []
@@ -69,7 +74,7 @@ async function extractEntries(options) {
           .find('.centerarticle-users > a')
           .text()
           .replace(/ users?/, '')
-        const hatebuPage =
+        const eurl =
           'https://b.hatena.ne.jp' +
           $(el)
             .find('.centerarticle-users > a')
@@ -92,10 +97,10 @@ async function extractEntries(options) {
         // Twitter clicks needs ajax evaluation.
         return {
           eid,
+          eurl,
           title,
           url,
           users,
-          hatebuPage,
           date,
           comment,
           commentPermalink
