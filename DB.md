@@ -28,6 +28,29 @@ create table HATENA_BOOKMARKS (
 ## USER_BOOKMARKS
 
 b.hatena.ne.jp からスクレイピングしたデータ。
+そのユーザーが何をブックマークしたか、のみを記録する。
+
+|name    |type     |length|
+|--------|---------|-----:|
+|userid  |varchar  |    20|
+|eid     |varchar  |    20|
+|url     |varchar  |  2000|
+|date    |date     |     -|
+
+```sql
+create table USER_BOOKMARKS (
+  userid varchar(20),
+  eid varchar(20),
+  url varchar(2000),
+  date date,
+  PRIMARY KEY (userid, eid)
+)
+```
+
+
+## USER_BOOKMARKS_DETAIL
+
+b.hatena.ne.jp からスクレイピングしたデータ。
 そのユーザーが何をブックマークしてどんなコメントを投稿し、どれだけ★を得たかを記録する。
 
 - 継続更新対象: ブックマークしてから５日以内
@@ -42,7 +65,7 @@ b.hatena.ne.jp からスクレイピングしたデータ。
 |starlen  |smallint     |                  -|
 
 ```sql
-create table USER_BOOKMARKS (
+create table USER_BOOKMARKS_DETAIL (
   userid varchar(20),
   eid varchar(20),
   timestamp smalldatetime,

@@ -33,12 +33,44 @@ module.exports = class DB {
     return result
   }
 
+  static async deleteRecentForUpdate(obj) {
+    const { userid, date } = obj
+    await db.connect(config)
+    // TODO: Injection
+    const sql1 = `delete from USER_BOOKMARKS where userid = '${userid}' and date >= '${date}'`
+    dg(sql1)
+    await db.query(sql1).catch(e => {
+      console.warn(e.toString())
+    })
+    const sql2 = `delete from USER_BOOKMARKS_DETAIL where userid = '${userid}' and timestamp >= '${date} 00:00:00'`
+    dg(sql2)
+    await db.query(sql2).catch(e => {
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
   static async insertUserBookmark(obj) {
+    const { userid, eid, url, date } = obj
+    await db.connect(config)
+    // TODO: Injection
+    const sql = `insert into USER_BOOKMARKS values ('${userid}','${eid}','${url}','${date}')`
+    dg(sql)
+    await db.query(sql).catch(e => {
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
+  static async insertUserBookmarkDetail(obj) {
     const { userid, eid, timestamp, comment, tags, starlen } = obj
     await db.connect(config)
     // TODO: Injection
-    const result = await db.query`insert into USER_BOOKMARKS values (${userid},${eid},${timestamp},${comment},${tags},${starlen})`
-    console.dir(result)
+    const sql = `insert into USER_BOOKMARKS_DETAIL values ('${userid}','${eid}','${timestamp}','${comment}','${tags}','${starlen}')`
+    dg(sql)
+    await db.query(sql).catch(e => {
+      console.warn(e.toString())
+    })
     await db.close()
   }
 }

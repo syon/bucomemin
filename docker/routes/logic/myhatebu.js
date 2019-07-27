@@ -20,16 +20,16 @@ const options = {
  * １年前に到達 or 20ページ巡回
  */
 async function get1YearBookmarks({ user }) {
-  dg('====[extractEntries]========================')
-  let recentBookmarks = []
+  dg('====[extractUserBookmarks]========================')
+  let bookmarks = []
   for (let i = 0; i < 20; i++) {
     dg('......', i)
     const num = i + 1
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
-    const list = await extractEntries(options)
-    recentBookmarks = recentBookmarks.concat(list)
-    dg(recentBookmarks.length)
-    const old = recentBookmarks.find(x => {
+    const list = await extractUserBookmarks(options)
+    bookmarks = bookmarks.concat(list)
+    dg(bookmarks.length)
+    const old = bookmarks.find(x => {
       const oneYearAgo = moment().subtract(1, 'year')
       return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
     })
@@ -37,16 +37,16 @@ async function get1YearBookmarks({ user }) {
   }
 
   dg('====[getBucomeDetailFromAPI]========================')
-  const recentBookmarksEx = []
-  for (let i = 0; i < recentBookmarks.length; i++) {
-    const entry = recentBookmarks[i]
-    dg(`[${i + 1}/${recentBookmarks.length}] (${entry.date}) ${entry.url}`)
+  const exBookmarks = []
+  for (let i = 0; i < bookmarks.length; i++) {
+    const entry = bookmarks[i]
+    dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
     const bucome = await Hatena.Custom.getBucomeDetailFromAPI(entry.url, user)
     bucome.stars = bucome.stars || []
-    recentBookmarksEx.push({ ...entry, ...bucome })
+    exBookmarks.push({ ...entry, ...bucome })
   }
 
-  return recentBookmarksEx
+  return exBookmarks
 
   // dg('====[scrapeHatebuPageData]========================')
   // // TODO: はてブページのマスタとしてユーザー配下ではなくロビネライクに管理すべき
@@ -58,53 +58,26 @@ async function get1YearBookmarks({ user }) {
   // return results
 }
 
-async function extractEntries(options) {
+/**
+ * このメソッドの責務は「対象ユーザが何のページをブックマークしたか」のみ。
+ * 得るべきデータは eid, 記事URL, date のみ。それ以外はAPIから取得する。
+ */
+async function extractUserBookmarks(options) {
   // TODO: 本当にすべて取得できてる？ Ajaxあり
   return await request(options)
     .then(function($) {
       const list = $('.bookmark-item').map((i, el) => {
-        const title = $(el)
-          .find('.centerarticle-entry-title')
-          .text()
-          .trim()
-        const url = $(el)
-          .find('.centerarticle-entry-title > a')
-          .attr('href')
-        const users = $(el)
-          .find('.centerarticle-users > a')
-          .text()
-          .replace(/ users?/, '')
-        const eurl =
-          'https://b.hatena.ne.jp' +
-          $(el)
-            .find('.centerarticle-users > a')
-            .attr('href')
         const eid = $(el)
           .find('.centerarticle-reaction')
           .attr('id')
           .replace(/^bookmark-/, '')
+        const url = $(el)
+          .find('.centerarticle-entry-title > a')
+          .attr('href')
         const date = $(el)
           .find('.centerarticle-reaction-timestamp')
           .text()
-        const comment = $(el)
-          .find('.js-comment')
-          .text()
-        const commentPermalink =
-          'https://b.hatena.ne.jp' +
-          $(el)
-            .find('.comment-permalink > a')
-            .attr('href')
-        // Twitter clicks needs ajax evaluation.
-        return {
-          eid,
-          eurl,
-          title,
-          url,
-          users,
-          date,
-          comment,
-          commentPermalink
-        }
+        return { eid, url, date }
       })
       return list.get()
     })
@@ -124,15 +97,15 @@ async function extractEntries(options) {
  */
 async function getRecentBookmarks({ user }) {
   dg(`====[getRecentBookmarks] (${user}) ========================`)
-  let recentBookmarks = []
-  for (let i = 0; i < 20; i++) {
+  let bookmarks = []
+  for (let i = 0; i < 2; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
-    const list = await extractEntries(options)
-    recentBookmarks = recentBookmarks.concat(list)
-    dg(`Collected:`, recentBookmarks.length)
-    const old = recentBookmarks.find(x => {
+    const list = await extractUserBookmarks(options)
+    bookmarks = bookmarks.concat(list)
+    dg(`Collected:`, bookmarks.length)
+    const old = bookmarks.find(x => {
       const fiveDaysAgo = moment().subtract(5, 'days')
       return moment(x.date, 'YYYY/MM/DD') < fiveDaysAgo
     })
@@ -141,7 +114,15 @@ async function getRecentBookmarks({ user }) {
       break
     }
   }
-  return recentBookmarks
+  const exBookmarks = []
+  for (let i = 0; i < bookmarks.length; i++) {
+    const entry = bookmarks[i]
+    dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
+    const bucome = await Hatena.Custom.getBucomeDetailFromAPI(entry.url, user)
+    bucome.stars = bucome.stars || []
+    exBookmarks.push({ ...entry, ...bucome })
+  }
+  return exBookmarks
 }
 
 module.exports = { get1YearBookmarks, getRecentBookmarks }
