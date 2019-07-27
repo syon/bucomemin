@@ -15,6 +15,7 @@ const config = {
 module.exports = class DB {
 
   static async selectAllAnnualSummaly() {
+    dg('[#selectAllAnnualSummaly]')
     await db.connect(config)
     const sql = `select * from USER_ANNUAL_SUMMALY order by userid, attr_key`
     dg(sql)
@@ -24,13 +25,12 @@ module.exports = class DB {
     ////////////////////
     const dataSet = {}
     result.forEach(r => {
-      //
       if (!dataSet[r.userid]) dataSet[r.userid] = {}
-      const { userid } = r
       const val = /^\d+$/.test(r.attr_val) ? Number(r.attr_val) : r.attr_val
       dataSet[r.userid][r.attr_key] = val
     })
     // これを返した先で Firebase に事前計算結果を格納すればよい
+    return dataSet
   }
 
   /**
