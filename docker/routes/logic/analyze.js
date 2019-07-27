@@ -1,30 +1,34 @@
 const debug = require('debug')
 const Storage = require('./storage')
+const DB = require('./DB')
 
 const dg = debug('app:analyze')
 
 module.exports = class Analyze {
   static async main({ user }) {
     dg(`==== [Analyze#main] (${user}) START ====`)
-    const data = await Storage.loadJsonFile(`recent/${user}.json`)
+    // const data = await Storage.loadJsonFile(`recent/${user}.json`)
 
-    const commentRate = calcCommentRate(data)
-    const starredRate = calcStarredRate(data)
-    // const rankinRate = calcRankinRate(data, user)
-    const anondRate = calcAnondRate(data)
-    const sparkles = detectSparkleComments(data)
-    // const dailyStars = makeDailyStars(data)
-    const result = { commentRate, starredRate, anondRate, sparkles }
-    await Storage.saveJsonFile(result, `analyze/${user}.json`)
+    // const commentRate = calcCommentRate(data)
+    // const starredRate = calcStarredRate(data)
+    // // const rankinRate = calcRankinRate(data, user)
+    // const anondRate = calcAnondRate(data)
+    // const sparkles = detectSparkleComments(data)
+    // // const dailyStars = makeDailyStars(data)
+    // const result = { commentRate, starredRate, anondRate, sparkles }
+    // await Storage.saveJsonFile(result, `analyze/${user}.json`)
 
-    const bubble = makeBubble(data)
-    await Storage.saveJsonFile(bubble, `bubble/${user}.json`)
+    // const bubble = makeBubble(data)
+    // await Storage.saveJsonFile(bubble, `bubble/${user}.json`)
 
-    const calendarData = makeCalendarData(data)
-    await Storage.saveJsonFile(calendarData, `calendar/${user}.json`)
-    dg(`==== [Analyze#main] (${user}) END ====`)
+    // const calendarData = makeCalendarData(data)
+    // await Storage.saveJsonFile(calendarData, `calendar/${user}.json`)
+    // dg(`==== [Analyze#main] (${user}) END ====`)
 
-    // USER_MONTHLY_TOTAL
+    await DB.delinsMonthlyTotalStarlenSum()
+    await DB.delinsAnnualSummalyBookmarkSum()
+    await DB.delinsAnnualSummalyCommentedLen()
+    await DB.delinsAnnualSummalyStarredLen()
   }
 }
 
