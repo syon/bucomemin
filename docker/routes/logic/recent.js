@@ -18,21 +18,12 @@ module.exports = class Recent {
 
   static async updateDB(user, bookmarks) {
     // TODO: transaction start
-    await DB.deleteRecentForUpdate({
-      userid: user,
-      date: '2019-07-22' // 5 days ago
-    })
     for (const b of bookmarks) {
       dg(`[#updateDB] eid:(${b.eid})`)
-      await DB.insertUserBookmark({
+      await DB.delinsUserBookmark({
         userid: user,
         eid: b.eid,
         url: b.url,
-        date: b.date
-      })
-      await DB.insertUserBookmarkDetail({
-        userid: user,
-        eid: b.eid,
         timestamp: b.timestamp,
         comment: b.comment,
         tags: JSON.stringify(b.tags),
