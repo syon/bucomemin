@@ -6,7 +6,7 @@ const DB = require('../routes/logic/DB')
 
 ;(async () => {
   const user = 'Dy66'
-  await DB.delinsAnnualSummalyStarredLen(user)
+  await DB.selectAllAnnualSummaly()
     .then(result => {
       dg(result)
     })
