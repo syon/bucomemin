@@ -121,4 +121,33 @@ module.exports = class DB {
     })
     await db.close()
   }
+
+  static async delinsAnnualSummalyBookmarkSum() {
+    dg('<Update COMMENTED_LEN>')
+    await db.connect(config)
+    // TODO: Injection
+    dg('delete from USER_ANNUAL_SUMMALY ...')
+    let delSql = ''
+    delSql += ` delete from USER_ANNUAL_SUMMALY`
+    delSql += `  where attr_key = 'COMMENTED_LEN'`
+    await db.query(delSql).catch(e => {
+      console.warn(e.toString())
+    })
+
+    dg('insert into USER_ANNUAL_SUMMALY ...')
+    let sql = ''
+    sql += ` insert into USER_ANNUAL_SUMMALY`
+    sql += ` select userid`
+    sql += `     , 'COMMENTED_LEN' as attr_key`
+    sql += `     , count(*) as attr_val`
+    sql += ` from USER_BOOKMARKS`
+    sql += ` where timestamp >= dateadd(year, -1, getdate())`
+    sql += ` and timestamp < dateadd(day, 1, getdate())`
+    sql += ` and len(comment) > 0`
+    sql += ` group by userid`
+    await db.query(sql).catch(e => {
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
 }
