@@ -56,9 +56,29 @@ create table USER_BOOKMARKS (
 ```
 
 
+## USER_ANNUAL_SUMMALY
+
+（先月までの）年間サマリ。最新のみ保管。
+
+|name      |type     |  length|
+|----------|---------|-------:|
+|userid    |varchar  |      20|
+|attr_key  |varchar  |      20|
+|attr_val  |varchar  |      20|
+
+```sql
+create table USER_ANNUAL_SUMMALY (
+  userid varchar(20),
+  attr_key varchar(20),
+  attr_val varchar(20),
+  PRIMARY KEY (userid, attr_key)
+)
+```
+
+
 ## USER_MONTHLY_TOTAL
 
-月次集計サマリ。
+月次集計結果。
 
 |name      |type     |  length|
 |----------|---------|-------:|

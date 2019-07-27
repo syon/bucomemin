@@ -71,7 +71,7 @@ module.exports = class DB {
     delSql += ` delete from USER_MONTHLY_TOTAL`
     delSql += `  where attr_key = 'STARLEN_SUM'`
     delSql += `    and yyyymm >= substring(convert(NVARCHAR, dateadd(year, -1, getdate()), 112), 1, 6)`
-    delSql += `    and yyyymm <= substring(convert(NVARCHAR, dateadd(year,  1, getdate()), 112), 1, 6)`
+    delSql += `    and yyyymm <  substring(convert(NVARCHAR, dateadd(day,   1, getdate()), 112), 1, 6)`
     await db.query(delSql).catch(e => {
       console.warn(e.toString())
     })
@@ -85,9 +85,37 @@ module.exports = class DB {
     sql += `         , starlen`
     sql += `     from USER_BOOKMARKS`
     sql += `     where timestamp >= dateadd(year, -1, getdate())`
-    sql += `       and timestamp <= dateadd(year,  1, getdate())`
+    sql += `       and timestamp <  dateadd(day,   1, getdate())`
     sql += ` ) sub`
     sql += ` group by userid, yyyymm`
+    await db.query(sql).catch(e => {
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
+  static async delinsAnnualSummalyBookmarkSum() {
+    dg('<Update BOOKMARK_SUM>')
+    await db.connect(config)
+    // TODO: Injection
+    dg('delete from USER_ANNUAL_SUMMALY ...')
+    let delSql = ''
+    delSql += ` delete from USER_ANNUAL_SUMMALY`
+    delSql += `  where attr_key = 'BOOKMARK_SUM'`
+    await db.query(delSql).catch(e => {
+      console.warn(e.toString())
+    })
+
+    dg('insert into USER_ANNUAL_SUMMALY ...')
+    let sql = ''
+    sql += ` insert into USER_ANNUAL_SUMMALY`
+    sql += ` select userid`
+    sql += `     , 'BOOKMARK_SUM' as attr_key`
+    sql += `     , count(*) as attr_val`
+    sql += ` from USER_BOOKMARKS`
+    sql += ` where timestamp >= dateadd(year, -1, getdate())`
+    sql += ` and timestamp < dateadd(day, 1, getdate())`
+    sql += ` group by userid`
     await db.query(sql).catch(e => {
       console.warn(e.toString())
     })
