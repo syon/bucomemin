@@ -63,12 +63,14 @@ module.exports = class DB {
   }
 
   static async delinsMonthlyTotalStarlenSum() {
+    dg('<Update STARLEN_SUM>')
     await db.connect(config)
     // TODO: Injection
     dg('delete from USER_MONTHLY_TOTAL ...')
     let delSql = ''
     delSql += ` delete from USER_MONTHLY_TOTAL`
-    delSql += `  where yyyymm >= substring(convert(NVARCHAR, dateadd(year, -1, getdate()), 112), 1, 6)`
+    delSql += `  where attr_key = 'STARLEN_SUM'`
+    delSql += `    and yyyymm >= substring(convert(NVARCHAR, dateadd(year, -1, getdate()), 112), 1, 6)`
     delSql += `    and yyyymm <= substring(convert(NVARCHAR, dateadd(year,  1, getdate()), 112), 1, 6)`
     await db.query(delSql).catch(e => {
       console.warn(e.toString())
