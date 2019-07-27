@@ -6,7 +6,7 @@ const MyHatebu = require('../routes/logic/myhatebu')
 
 ;(async () => {
   const params = { user: 'Dy66' }
-  const result = await MyHatebu.getRecentBookmarks(params)
+  const result = await MyHatebu.get1YearBookmarks(params)
   dg(result)
 })().catch(e => {
   console.warn(e)

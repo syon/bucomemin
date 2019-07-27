@@ -6,13 +6,8 @@ const Recent = require('../routes/logic/recent')
 
 ;(async () => {
   const params = { user: 'Dy66' }
-  await Recent.main(params)
-    .then(result => {
-      res.json(result)
-    })
-    .catch(e => {
-      res.status(500).send(e.toString())
-    })
+  const result = await Recent.updateYearly(params)
+  dg(result)
 })().catch(e => {
-  // Deal with the fact the chain failed
+  console.warn(e)
 })

@@ -34,7 +34,6 @@ module.exports = class DB {
   }
 
   static async delinsUserBookmark(obj) {
-    const { userid, date } = obj
     await DB.deleteUserBookmark(obj)
     await DB.insertUserBookmark(obj)
   }

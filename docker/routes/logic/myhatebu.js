@@ -23,12 +23,12 @@ async function get1YearBookmarks({ user }) {
   dg('====[extractUserBookmarks]========================')
   let bookmarks = []
   for (let i = 0; i < 20; i++) {
-    dg('......', i)
     const num = i + 1
+    dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
     const list = await extractUserBookmarks(options)
     bookmarks = bookmarks.concat(list)
-    dg(bookmarks.length)
+    dg(`Collected:`, bookmarks.length)
     const old = bookmarks.find(x => {
       const oneYearAgo = moment().subtract(1, 'year')
       return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
@@ -98,7 +98,7 @@ async function extractUserBookmarks(options) {
 async function getRecentBookmarks({ user }) {
   dg(`====[getRecentBookmarks] (${user}) ========================`)
   let bookmarks = []
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 20; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
