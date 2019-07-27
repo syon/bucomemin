@@ -61,4 +61,34 @@ module.exports = class DB {
     })
     await db.close()
   }
+
+  static async delinsMonthlyTotalStarlenSum() {
+    await db.connect(config)
+    // TODO: Injection
+    dg('delete from USER_MONTHLY_TOTAL ...')
+    let delSql = ''
+    delSql += ` delete from USER_MONTHLY_TOTAL`
+    delSql += `  where yyyymm >= substring(convert(NVARCHAR, dateadd(year, -1, getdate()), 112), 1, 6)`
+    delSql += `    and yyyymm <= substring(convert(NVARCHAR, dateadd(year,  1, getdate()), 112), 1, 6)`
+    await db.query(delSql).catch(e => {
+      console.warn(e.toString())
+    })
+
+    dg('insert into USER_MONTHLY_TOTAL ...')
+    let sql = ''
+    sql += ` insert into USER_MONTHLY_TOTAL`
+    sql += ` select userid, yyyymm, 'STARLEN_SUM' as attr_key, sum(starlen) as attr_val from (`
+    sql += `     select userid`
+    sql += `         , substring(convert(NVARCHAR, timestamp, 112), 1, 6) as yyyymm`
+    sql += `         , starlen`
+    sql += `     from USER_BOOKMARKS`
+    sql += `     where timestamp >= dateadd(year, -1, getdate())`
+    sql += `       and timestamp <= dateadd(year,  1, getdate())`
+    sql += ` ) sub`
+    sql += ` group by userid, yyyymm`
+    await db.query(sql).catch(e => {
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
 }

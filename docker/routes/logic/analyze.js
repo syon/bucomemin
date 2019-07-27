@@ -23,6 +23,8 @@ module.exports = class Analyze {
     const calendarData = makeCalendarData(data)
     await Storage.saveJsonFile(calendarData, `calendar/${user}.json`)
     dg(`==== [Analyze#main] (${user}) END ====`)
+
+    // USER_MONTHLY_TOTAL
   }
 }
 

@@ -54,3 +54,25 @@ create table USER_BOOKMARKS (
   PRIMARY KEY (userid, eid)
 )
 ```
+
+
+## USER_MONTHLY_TOTAL
+
+月次集計サマリ。
+
+|name      |type     |  length|
+|----------|---------|-------:|
+|userid    |varchar  |      20|
+|yyyymm    |varchar  |      10|
+|attr_key  |varchar  |      20|
+|attr_val  |varchar  |      20|
+
+```sql
+create table USER_MONTHLY_TOTAL (
+  userid varchar(20),
+  yyyymm varchar(10),
+  attr_key varchar(20),
+  attr_val varchar(20),
+  PRIMARY KEY (userid, yyyymm, attr_key)
+)
+```
