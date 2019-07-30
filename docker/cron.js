@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 // eslint-disable-next-line node/no-unpublished-require
 require('dotenv').config()
 const debug = require('debug')
@@ -24,6 +25,7 @@ new CronJob(
     await orderHandler().catch(e => {
       dg(e)
     })
+    const timestamp = new Date().toLocaleString()
     console.log(signBunny(`Done! ${timestamp}`))
   },
   null,
