@@ -5,8 +5,8 @@ const DB = require('./DB')
 const dg = debug('app:analyze')
 
 module.exports = class Analyze {
-  static async main({ user }) {
-    dg(`==== [Analyze#main] (${user}) START ====`)
+  static async main() {
+    dg(`==== [Analyze#main] START ====`)
     // const data = await Storage.loadJsonFile(`recent/${user}.json`)
 
     // const commentRate = calcCommentRate(data)

@@ -5,8 +5,7 @@ debug.enable('app:*')
 const Analyze = require('../routes/logic/analyze')
 
 ;(async () => {
-  const user = 'Dy66'
-  await Analyze.main({ user })
+  await Analyze.main()
     .then(result => {
       dg(result)
     })

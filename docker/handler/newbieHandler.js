@@ -1,0 +1,48 @@
+const dg = require('debug')('app:newbieHandler')
+const { db } = require('../firebaseAdmin')
+
+const Recent = require('../routes/logic/recent')
+const Analyze = require('../routes/logic/analyze')
+
+module.exports = async () => {
+  dg('[#newbieHandler] start')
+  const orders = await fetchOrders()
+  for (const x of orders) {
+    const user = x.id
+    dg('$$$$ Annual summary $$$$', user)
+    await Recent.updateYearly({ user })
+    await removeOrder(x.id)
+  }
+  await Analyze.main()
+}
+
+async function fetchOrders() {
+  const result = await db
+    .collection('newbie')
+    .limit(10)
+    .get()
+    .then(querySnapshot => {
+      const orders = []
+      querySnapshot.forEach(doc => {
+        const id = doc.id
+        const obj = doc.data()
+        orders.push({ id, ...obj })
+      })
+      return orders
+    })
+    .catch(error => {
+      dg(`Firebase NG`, error)
+    })
+  dg(result)
+  return result
+}
+
+async function removeOrder(id) {
+  return await db
+    .collection('newbie')
+    .doc(id)
+    .delete()
+    .catch(error => {
+      dg('Error removing document: ', error)
+    })
+}
