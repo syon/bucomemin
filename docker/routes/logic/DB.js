@@ -13,7 +13,6 @@ const config = {
 }
 
 module.exports = class DB {
-
   static async selectAllAnnualSummaly() {
     dg('[#selectAllAnnualSummaly]')
     await db.connect(config)
@@ -22,7 +21,7 @@ module.exports = class DB {
     const res = await db.query(sql)
     await db.close()
     const result = res.recordset
-    ////////////////////
+    // //////////////////
     const dataSet = {}
     result.forEach(r => {
       if (!dataSet[r.userid]) dataSet[r.userid] = {}
@@ -200,7 +199,7 @@ module.exports = class DB {
     await db.close()
   }
 
-  static async delinsAnnualSummalyStarredLen() {
+  static async delinsAnnualSummalyAnondLen() {
     dg('<Update ANOND_LEN>')
     await db.connect(config)
     // TODO: Injection

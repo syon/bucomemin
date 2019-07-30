@@ -29,6 +29,7 @@ module.exports = class Analyze {
     await DB.delinsAnnualSummalyBookmarkSum()
     await DB.delinsAnnualSummalyCommentedLen()
     await DB.delinsAnnualSummalyStarredLen()
+    await DB.delinsAnnualSummalyAnondLen()
   }
 }
 
