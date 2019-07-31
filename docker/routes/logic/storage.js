@@ -1,10 +1,9 @@
 const debug = require('debug')
 const { storage } = require('../../firebaseAdmin')
-const MyHatebu = require('./myhatebu')
 
 debug.enable('app:*')
 const dg = debug('app:storage')
-const bucket = storage.bucket('gs://bmin-faf7e.appspot.com/')
+const bucket = storage.bucket('gs://lobine-a91c5.appspot.com/')
 
 module.exports = class Storage {
   static async saveAsJson(path, obj) {

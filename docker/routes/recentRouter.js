@@ -4,7 +4,7 @@ const Recent = require('./logic/recent')
 
 router.post('/', async (req, res, next) => {
   const params = req.body
-  await Recent.main(params)
+  await Recent.updateRecent(params)
     .then(result => {
       res.json(result)
     })

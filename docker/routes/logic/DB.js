@@ -32,6 +32,26 @@ module.exports = class DB {
     return dataSet
   }
 
+  static async selectAnnualBookmarksByUser(user) {
+    dg(`[#selectAnnualBookmarksByUser] ${user}`)
+    await db.connect(config)
+    // TODO: Injection
+    let sql = ''
+    sql += ` select date, count(date) as count from (`
+    sql += `   select CONVERT(VARCHAR(10), timestamp, 111) as date from USER_BOOKMARKS`
+    sql += `   where userid = '${user}'`
+    sql += `   and timestamp >= dateadd(year, -1, getdate())`
+    sql += `   and timestamp <  dateadd(day,   1, getdate())`
+    sql += ` ) sub`
+    sql += ` group by date`
+    sql += ` order by date desc`
+    dg(sql)
+    const res = await db.query(sql)
+    await db.close()
+    const result = res.recordset
+    return result
+  }
+
   /**
    * 蓄積したブクマの最新タイムスタンプを得る。
    * 過去にスクレイピングしたものをまた取得する無駄をなくすため。

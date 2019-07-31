@@ -11,8 +11,7 @@ debug.enable('app:*')
 const orderHandler = require('./handler/orderHandler')
 const newbieHandler = require('./handler/newbieHandler')
 
-dg('******** Hello! This is cron.js ********')
-bunny('Hello! This is cron.js')
+bunny('Hello! cron.js is running.')
 
 // https://crontab.guru/
 
@@ -36,7 +35,7 @@ new CronJob(
  */
 new CronJob(
   // 秒 分 時 日 月 曜
-  '0 35 * * * *', // 毎時 45 分 00 秒
+  '0 45 * * * *', // 毎時 45 分 00 秒
   async () => {
     bunny('Start Newbie Cron')
     try {
