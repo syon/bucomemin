@@ -3,10 +3,12 @@ const { db } = require('../firebaseAdmin')
 
 const Recent = require('../routes/logic/recent')
 const Analyze = require('../routes/logic/analyze')
+const Bridge = require('../routes/logic/Bridge')
 
 module.exports = async () => {
   dg('[#newbieHandler] start')
   const orders = await fetchOrders()
+  if (orders.length === 0) return
   for (const x of orders) {
     const user = x.id
     dg('$$$$ Annual summary $$$$', user)
@@ -14,6 +16,7 @@ module.exports = async () => {
     await removeOrder(x.id)
   }
   await Analyze.main()
+  await Bridge.mirrorAnnualSummaly()
 }
 
 async function fetchOrders() {
