@@ -81,8 +81,8 @@ module.exports = class DB {
     await db.connect(config)
     // TODO: Injection
     const sql = `delete from USER_BOOKMARKS where userid = '${userid}' and eid = '${eid}'`
-    dg(sql)
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
@@ -93,8 +93,8 @@ module.exports = class DB {
     await db.connect(config)
     // TODO: Injection
     const sql = `insert into USER_BOOKMARKS values ('${userid}','${eid}','${url}','${timestamp}','${comment}','${tags}','${starlen}')`
-    dg(sql)
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
@@ -111,6 +111,7 @@ module.exports = class DB {
     delSql += `    and yyyymm >= substring(convert(NVARCHAR, dateadd(year, -1, getdate()), 112), 1, 6)`
     delSql += `    and yyyymm <= substring(convert(NVARCHAR, dateadd(day,   1, getdate()), 112), 1, 6)`
     await db.query(delSql).catch(e => {
+      dg(delSql)
       console.warn(e.toString())
     })
 
@@ -127,6 +128,7 @@ module.exports = class DB {
     sql += ` ) sub`
     sql += ` group by userid, yyyymm`
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
@@ -155,6 +157,7 @@ module.exports = class DB {
     sql += ` and timestamp < dateadd(day, 1, getdate())`
     sql += ` group by userid`
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
@@ -169,6 +172,7 @@ module.exports = class DB {
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'COMMENTED_LEN'`
     await db.query(delSql).catch(e => {
+      dg(delSql)
       console.warn(e.toString())
     })
 
@@ -184,6 +188,7 @@ module.exports = class DB {
     sql += ` and len(comment) > 0`
     sql += ` group by userid`
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
@@ -198,6 +203,7 @@ module.exports = class DB {
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'STARRED_LEN'`
     await db.query(delSql).catch(e => {
+      dg(delSql)
       console.warn(e.toString())
     })
 
@@ -214,6 +220,7 @@ module.exports = class DB {
     sql += ` and starlen > 0`
     sql += ` group by userid`
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
@@ -228,6 +235,7 @@ module.exports = class DB {
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'ANOND_LEN'`
     await db.query(delSql).catch(e => {
+      dg(delSql)
       console.warn(e.toString())
     })
 
@@ -243,6 +251,7 @@ module.exports = class DB {
     sql += ` and url like '%://anond%'`
     sql += ` group by userid`
     await db.query(sql).catch(e => {
+      dg(sql)
       console.warn(e.toString())
     })
     await db.close()
