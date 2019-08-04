@@ -15,10 +15,7 @@ module.exports = class Recent {
   static async updateRecent(params) {
     // TODO: Decode Username ???
     const { user } = params
-    // TODO: 月次取得
     const bookmarks = await MyHatebu.getRecentBookmarks({ user })
-    // Storage.saveAsJson(`recent/${user}.json`, bookmarks)
-    // TODO: transaction start
     for (const b of bookmarks) {
       dg(`[#updateDB] eid:(${b.eid})`)
       await DB.delinsHatenaBookmark({
@@ -40,17 +37,13 @@ module.exports = class Recent {
     }
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
-    // TODO: transaction end
   }
 
   static async updateYearly(params) {
     // TODO: Decode Username ???
     const { user } = params
-    // TODO: 月次取得
     // [ eid, url, date, title, eurl, count, comment, user, timestamp, tags, stars, uri ]
     const bookmarks = await MyHatebu.get1YearBookmarks({ user })
-    // Storage.saveAsJson(`recent/${user}.json`, bookmarks)
-    // TODO: transaction start
     for (const b of bookmarks) {
       dg(`[#updateDB] eid:(${b.eid})`)
       await DB.delinsHatenaBookmark({
@@ -72,6 +65,5 @@ module.exports = class Recent {
     }
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
-    // TODO: transaction end
   }
 }
