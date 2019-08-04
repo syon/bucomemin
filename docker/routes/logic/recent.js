@@ -21,6 +21,13 @@ module.exports = class Recent {
     // TODO: transaction start
     for (const b of bookmarks) {
       dg(`[#updateDB] eid:(${b.eid})`)
+      await DB.delinsHatenaBookmark({
+        eid: b.eid,
+        url: b.url,
+        title: b.title,
+        url: b.url,
+        users: b.count
+      })
       await DB.delinsUserBookmark({
         userid: user,
         eid: b.eid,

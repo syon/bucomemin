@@ -45,7 +45,6 @@ async function get1YearBookmarks({ user }) {
     // title, url, bookmarks, entry_url, eid, count, screenshot
     const detail = await Hatena.Bookmark.getEntryLite(entry.url)
     const { title, entry_url: eurl, count } = detail
-    // TODO: ★ Insert HATENA_BOOKMARK table ★
     // comment, user, tags, timestamp, uri, stars, can_comment
     const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
     bucome.stars = bucome.stars || []
@@ -125,11 +124,12 @@ async function getRecentBookmarks({ user }) {
     const entry = bookmarks[i]
     dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
     // title, url, bookmarks, entry_url, eid, count, screenshot
-    const detail = await Bookmark.getEntryLite(entry.url)
-    // TODO: ★ Insert HATENA_BOOKMARK table ★
+    const detail = await Hatena.Bookmark.getEntryLite(entry.url)
+    const { title, entry_url: eurl, count } = detail
+    // comment, user, tags, timestamp, uri, stars, can_comment
     const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
     bucome.stars = bucome.stars || []
-    exBookmarks.push({ ...entry, ...bucome })
+    exBookmarks.push({ ...entry, title, eurl, count, ...bucome })
   }
   return exBookmarks
 }

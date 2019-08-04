@@ -114,7 +114,7 @@ module.exports = class DB {
     const req = new db.Request()
     req.input('eid', db.VarChar, eid)
     req.input('eurl', db.VarChar, url)
-    req.input('title', db.VarChar, title)
+    req.input('title', db.NVarChar, title)
     req.input('url', db.VarChar, eurl)
     req.input('users', db.VarChar, users)
     const sql = `insert into HATENA_BOOKMARKS values (@eid, @eurl, @title, @url, @users)`
@@ -150,8 +150,8 @@ module.exports = class DB {
     req.input('eid', db.VarChar, eid)
     req.input('url', db.VarChar, url)
     req.input('timestamp', db.VarChar, timestamp)
-    req.input('comment', db.VarChar, comment)
-    req.input('tags', db.VarChar, tags)
+    req.input('comment', db.NVarChar, comment)
+    req.input('tags', db.NVarChar, tags)
     req.input('starlen', db.VarChar, starlen)
     const sql = `insert into USER_BOOKMARKS values (@userid, @eid, @url, @timestamp, @comment, @tags, @starlen)`
     await req.query(sql).catch(e => {

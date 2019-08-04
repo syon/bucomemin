@@ -8,10 +8,10 @@ const Recent = require('../routes/logic/recent')
   const params = { user: 'Dy66' }
   await Recent.updateRecent(params)
     .then(result => {
-      res.json(result)
+      dg(result)
     })
     .catch(e => {
-      res.status(500).send(e.toString())
+      dg(e)
     })
 })().catch(e => {
   // Deal with the fact the chain failed
