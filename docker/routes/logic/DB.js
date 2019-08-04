@@ -52,6 +52,26 @@ module.exports = class DB {
     return result
   }
 
+  static async selectAnnualCommentsByUser(user) {
+    dg(`[#selectAnnualCommentsByUser] ${user}`)
+    await db.connect(config)
+    // TODO: Injection
+    let sql = ''
+    sql += ` select url, timestamp, comment, starlen as stars`
+    sql += ` from USER_BOOKMARKS`
+    sql += ` where userid = '${user}'`
+    sql += ` and timestamp >= dateadd(year, -1, getdate())`
+    sql += ` and timestamp <  dateadd(day,   1, getdate())`
+    sql += ` order by timestamp desc`
+    const res = await db.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+    const result = res.recordset
+    return result
+  }
+
   /**
    * 蓄積したブクマの最新タイムスタンプを得る。
    * 過去にスクレイピングしたものをまた取得する無駄をなくすため。

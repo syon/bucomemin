@@ -36,4 +36,15 @@ module.exports = class Bridge {
       dg(e)
     }
   }
+
+  static async mirrorBubble(user) {
+    dg(`[#mirrorBubble] (${user}) start`)
+    const dataSet = await AzureDB.selectAnnualCommentsByUser(user)
+    dg(`[#mirrorBubble] (${user}) Annual bookmarks count:`, dataSet.length)
+    try {
+      await Storage.saveJsonFile(dataSet, `bubble/${user}.json`)
+    } catch(e) {
+      dg(e)
+    }
+  }
 }

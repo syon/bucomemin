@@ -13,6 +13,7 @@ module.exports = async () => {
     const user = x.id
     dg('$$$$ Annual summary $$$$', user)
     await Recent.updateYearly({ user })
+    await Bridge.mirrorBubble(user)
     await removeOrder(x.id)
   }
   await Analyze.main()
