@@ -111,9 +111,16 @@ module.exports = class DB {
   static async insertUserBookmark(obj) {
     const { userid, eid, url, timestamp, comment, tags, starlen } = obj
     await db.connect(config)
-    // TODO: Injection
-    const sql = `insert into USER_BOOKMARKS values ('${userid}','${eid}','${url}','${timestamp}','${comment}','${tags}','${starlen}')`
-    await db.query(sql).catch(e => {
+    const req = new db.Request()
+    req.input('userid', db.VarChar, userid)
+    req.input('eid', db.VarChar, eid)
+    req.input('url', db.VarChar, url)
+    req.input('timestamp', db.VarChar, timestamp)
+    req.input('comment', db.VarChar, comment)
+    req.input('tags', db.VarChar, tags)
+    req.input('starlen', db.VarChar, starlen)
+    const sql = `insert into USER_BOOKMARKS values (@userid, @eid, @url, @timestamp, @comment, @tags, @starlen)`
+    await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
     })
