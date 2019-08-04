@@ -40,11 +40,19 @@ module.exports = class Recent {
     // TODO: Decode Username ???
     const { user } = params
     // TODO: 月次取得
+    // [ eid, url, date, title, eurl, count, comment, user, timestamp, tags, stars, uri ]
     const bookmarks = await MyHatebu.get1YearBookmarks({ user })
     // Storage.saveAsJson(`recent/${user}.json`, bookmarks)
     // TODO: transaction start
     for (const b of bookmarks) {
       dg(`[#updateDB] eid:(${b.eid})`)
+      await DB.delinsHatenaBookmark({
+        eid: b.eid,
+        url: b.url,
+        title: b.title,
+        url: b.url,
+        users: b.count
+      })
       await DB.delinsUserBookmark({
         userid: user,
         eid: b.eid,

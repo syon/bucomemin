@@ -91,6 +91,40 @@ module.exports = class DB {
     return result
   }
 
+  static async delinsHatenaBookmark(obj) {
+    await DB.deleteHatenaBookmark(obj)
+    await DB.insertHatenaBookmark(obj)
+  }
+
+  static async deleteHatenaBookmark(obj) {
+    const { eid } = obj
+    await db.connect(config)
+    // TODO: Injection
+    const sql = `delete from HATENA_BOOKMARKS where eid = '${eid}'`
+    await db.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
+  static async insertHatenaBookmark(obj) {
+    const { eid, url, title, eurl, users } = obj
+    await db.connect(config)
+    const req = new db.Request()
+    req.input('eid', db.VarChar, eid)
+    req.input('eurl', db.VarChar, url)
+    req.input('title', db.VarChar, title)
+    req.input('url', db.VarChar, eurl)
+    req.input('users', db.VarChar, users)
+    const sql = `insert into HATENA_BOOKMARKS values (@eid, @eurl, @title, @url, @users)`
+    await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
   static async delinsUserBookmark(obj) {
     await DB.deleteUserBookmark(obj)
     await DB.insertUserBookmark(obj)
