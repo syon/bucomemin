@@ -5,7 +5,7 @@ debug.enable('app:*')
 const Recent = require('../routes/logic/recent')
 
 ;(async () => {
-  const params = { user: 'Dy66' }
+  const params = { user: 'duckt' }
   await Recent.updateRecent(params)
     .then(result => {
       dg(result)

@@ -57,8 +57,8 @@ module.exports = class DB {
     await db.connect(config)
     // TODO: Injection
     let sql = ''
-    sql += ` select url, timestamp, comment, starlen as stars`
-    sql += ` from USER_BOOKMARKS`
+    sql += ` select hb.title, ub.url, ub.timestamp, ub.comment, ub.starlen as stars, hb.users`
+    sql += ` from USER_BOOKMARKS ub left outer join HATENA_BOOKMARKS hb on(hb.eid = ub.eid)`
     sql += ` where userid = '${user}'`
     sql += ` and timestamp >= dateadd(year, -1, getdate())`
     sql += ` and timestamp <  dateadd(day,   1, getdate())`

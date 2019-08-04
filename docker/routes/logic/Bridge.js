@@ -27,7 +27,6 @@ module.exports = class Bridge {
     try {
       const result = {}
       for (const d of dataSet) {
-        dg(d)
         const key = new Date(d.date).getTime() / 1000
         result[key] = d.count
       }
