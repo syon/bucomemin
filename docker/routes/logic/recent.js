@@ -70,6 +70,8 @@ module.exports = class Recent {
         starlen: b.stars.length
       })
     }
+    await Bridge.mirrorCalendar(user)
+    await Bridge.mirrorBubble(user)
     // TODO: transaction end
   }
 }

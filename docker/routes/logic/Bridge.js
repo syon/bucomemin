@@ -25,12 +25,7 @@ module.exports = class Bridge {
     dg(`[#mirrorCalendar] (${user}) Annual bookmarks count:`, dataSet.length)
     /* makeCalendarData */
     try {
-      const result = {}
-      for (const d of dataSet) {
-        const key = new Date(d.date).getTime() / 1000
-        result[key] = d.count
-      }
-      await Storage.saveJsonFile(result, `calendar/${user}.json`)
+      await Storage.saveJsonFile(dataSet, `calendar/${user}.json`)
     } catch(e) {
       dg(e)
     }
