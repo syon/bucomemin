@@ -36,12 +36,15 @@ async function get1YearBookmarks({ user }) {
     if (old) break
   }
 
-  dg('====[getBucomeDetailFromAPI]========================')
+  dg('====[extractBucomeDetail]========================')
   const exBookmarks = []
   for (let i = 0; i < bookmarks.length; i++) {
     const entry = bookmarks[i]
     dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
-    const bucome = await Hatena.Custom.getBucomeDetailFromAPI(entry.url, user)
+    // title, url, bookmarks, entry_url, eid, count, screenshot
+    const detail = await Hatena.Bookmark.getEntryLite(entry.url)
+    // TODO: ★ Insert HATENA_BOOKMARK table ★
+    const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
     bucome.stars = bucome.stars || []
     exBookmarks.push({ ...entry, ...bucome })
   }
@@ -118,7 +121,10 @@ async function getRecentBookmarks({ user }) {
   for (let i = 0; i < bookmarks.length; i++) {
     const entry = bookmarks[i]
     dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
-    const bucome = await Hatena.Custom.getBucomeDetailFromAPI(entry.url, user)
+    // title, url, bookmarks, entry_url, eid, count, screenshot
+    const detail = await Bookmark.getEntryLite(entry.url)
+    // TODO: ★ Insert HATENA_BOOKMARK table ★
+    const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
     bucome.stars = bucome.stars || []
     exBookmarks.push({ ...entry, ...bucome })
   }

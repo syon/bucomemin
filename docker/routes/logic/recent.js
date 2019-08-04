@@ -40,7 +40,7 @@ module.exports = class Recent {
     // TODO: Decode Username ???
     const { user } = params
     // TODO: 月次取得
-    const bookmarks = [] // await MyHatebu.get1YearBookmarks({ user })
+    const bookmarks = await MyHatebu.get1YearBookmarks({ user })
     // Storage.saveAsJson(`recent/${user}.json`, bookmarks)
     // TODO: transaction start
     for (const b of bookmarks) {
