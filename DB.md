@@ -29,13 +29,14 @@ create table HATENA_BOOKMARKS (
 
 b.hatena.ne.jp/userid/ ページに記載のプロフィールのスクレイピングデータ。
 
-|name          |type      |  length|
-|--------------|----------|-------:|
-|userid        |varchar   |      20|
-|name          |nvarchar  |     100|
-|bookmarklen   |smallint  |       -|
-|b_followlen   |smallint  |       -|
-|b_followerlen |smallint  |       -|
+|name          |type         |             length|
+|--------------|-------------|------------------:|
+|userid        |varchar      |                 20|
+|name          |nvarchar     |                100|
+|bookmarklen   |smallint     |                  -|
+|b_followlen   |smallint     |                  -|
+|b_followerlen |smallint     |                  -|
+|timestamp     |smalldatetime|YYYY-MM-DD hh:mm:ss|
 
 ```sql
 create table USER_PROFILE (
@@ -44,6 +45,7 @@ create table USER_PROFILE (
   bookmarklen smallint,
   b_followlen smallint,
   b_followerlen smallint,
+  last_update smalldatetime,
   PRIMARY KEY (userid)
 )
 ```
