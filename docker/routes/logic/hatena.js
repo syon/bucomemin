@@ -42,6 +42,11 @@ class Bookmark {
     return apiUrl
   }
 
+  static async getOverview(user) {
+    options.uri = `https://b.hatena.ne.jp/api/internal/cambridge/user/${user}`
+    return await request(options)
+  }
+
   static async getEntryCount(rawPageUrl) {
     const url = Util.encodeURI(rawPageUrl)
     const apiUrl = `${B.apiOrigin}/entry.count?url=${url}`

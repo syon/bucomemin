@@ -1,6 +1,7 @@
 const dg = require('debug')('app:newbieHandler')
 const { db } = require('../firebaseAdmin')
 
+const Ask = require('../routes/logic/Ask')
 const Recent = require('../routes/logic/recent')
 const Analyze = require('../routes/logic/analyze')
 const Bridge = require('../routes/logic/Bridge')
@@ -12,6 +13,7 @@ module.exports = async () => {
   for (const x of orders) {
     const user = x.id
     dg('$$$$ Annual summary $$$$', user)
+    await Ask.updateUserProfile({ user })
     await Recent.updateYearly({ user })
     await Bridge.mirrorBubble(user)
     await removeOrder(x.id)

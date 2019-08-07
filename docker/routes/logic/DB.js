@@ -13,6 +13,49 @@ const config = {
 }
 
 module.exports = class DB {
+  static async delinsUserProfile(obj) {
+    await DB.deleteUserProfile(obj)
+    await DB.insertUserProfile(obj)
+  }
+
+  static async deleteUserProfile(obj) {
+    const { userid } = obj
+    await db.connect(config)
+    const req = new db.Request()
+    req.input('userid', db.VarChar, userid)
+    const sql = `delete from USER_PROFILE where userid = @userid`
+    await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
+  static async insertUserProfile(obj) {
+    const {
+      userid,
+      name,
+      totalBookmarks,
+      totalFollowers,
+      totalFollowings,
+      timestamp
+    } = obj
+    await db.connect(config)
+    const req = new db.Request()
+    req.input('userid', db.VarChar, userid)
+    req.input('name', db.NVarChar, name)
+    req.input('totalBookmarks', db.SmallInt, totalBookmarks)
+    req.input('totalFollowers', db.SmallInt, totalFollowers)
+    req.input('totalFollowings', db.SmallInt, totalFollowings)
+    req.input('timestamp', db.SmallDateTime, timestamp)
+    const sql = `insert into USER_PROFILE values (@userid, @name, @totalBookmarks, @totalFollowers, @totalFollowings, @timestamp)`
+    await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
   static async selectAllAnnualSummaly() {
     dg('[#selectAllAnnualSummaly]')
     await db.connect(config)
@@ -113,9 +156,9 @@ module.exports = class DB {
     await db.connect(config)
     const req = new db.Request()
     req.input('eid', db.VarChar, eid)
-    req.input('eurl', db.VarChar, url)
+    req.input('eurl', db.VarChar, eurl)
     req.input('title', db.NVarChar, title)
-    req.input('url', db.VarChar, eurl)
+    req.input('url', db.VarChar, url)
     req.input('users', db.VarChar, users)
     const sql = `insert into HATENA_BOOKMARKS values (@eid, @eurl, @title, @url, @users)`
     await req.query(sql).catch(e => {
