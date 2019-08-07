@@ -1,6 +1,5 @@
 const qs = require('querystring')
 const request = require('request-promise-native')
-const { parseURL } = require('whatwg-url')
 
 const options = {
   headers: {
@@ -18,6 +17,13 @@ const B = {
 }
 
 class User {
+  static async getProfile({ user }) {
+    const url = `https://pf-api.hatena.com/profile/profiles?name=${user}`
+    const str = await request(url)
+    /* name, nickname, profile_icon_url, profile_image_url */
+    return JSON.parse(str)[user]
+  }
+
   static getProfileImageURL(user) {
     const apiUrl = `https://cdn.profile-image.st-hatena.com/users/${user}/profile.png`
     return apiUrl
