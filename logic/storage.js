@@ -6,12 +6,6 @@ const dg = debug('app:storage')
 const bucket = Storage.bucket('gs://lobine-a91c5.appspot.com/')
 
 module.exports = class Storage {
-  static async saveAsJson(path, obj) {
-    const jsonStr = JSON.stringify(obj, null, 2)
-    const file = bucket.file(path)
-    await file.save(jsonStr)
-  }
-
   static async saveJsonFile(data, path) {
     dg('[#saveJsonFile]', path)
     const jsonStr = JSON.stringify(data, null, 2)

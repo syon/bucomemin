@@ -74,11 +74,24 @@ module.exports = class DB {
     await db.close()
   }
 
+  static async selectAllProfiles() {
+    dg('[#selectAllProfiles]')
+    await db.connect(config)
+    const req = new db.Request()
+    const sql = `select * from USER_PROFILE order by userid asc`
+    const res = await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+    return res.recordset
+  }
+
   static async selectTargetsForUpdate() {
     dg('[#selectTargetsForUpdate]')
     await db.connect(config)
     const req = new db.Request()
-    const sql = `select userid from user_profile order by last_update`
+    const sql = `select userid from USER_PROFILE order by last_update`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())

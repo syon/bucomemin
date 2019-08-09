@@ -49,4 +49,10 @@ module.exports = class Bridge {
       dg(e)
     }
   }
+
+  static async mirrorAllProfiles() {
+    dg('[#mirrorAllProfiles]')
+    const profs = await AzureDB.selectAllProfiles()
+    await Storage.saveJsonFile(profs, `userdatalist/profiles.json`)
+  }
 }
