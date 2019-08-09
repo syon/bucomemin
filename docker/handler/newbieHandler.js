@@ -14,6 +14,7 @@ module.exports = async () => {
     const user = x.id
     dg('$$$$ Annual summary $$$$', user)
     await Ask.updateUserProfile({ user })
+    await Bridge.newProfile(user)
     await Bridge.mirrorProfile(user)
     await Recent.updateYearly({ user })
     await Bridge.mirrorBubble(user)

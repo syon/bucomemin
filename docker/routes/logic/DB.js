@@ -56,6 +56,19 @@ module.exports = class DB {
     await db.close()
   }
 
+  static async selectTargetsForUpdate() {
+    dg('[#selectTargetsForUpdate]')
+    await db.connect(config)
+    const req = new db.Request()
+    const sql = `select distinct userid from user_annual_summaly`
+    const res = await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+    return res.recordset
+  }
+
   static async selectUserProfile(userid) {
     dg('[#selectUserProfile]')
     await db.connect(config)

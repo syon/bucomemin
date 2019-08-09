@@ -4,6 +4,13 @@ const Firestore = require('./firestore')
 const Storage = require('./storage')
 
 module.exports = class Bridge {
+  static async newProfile(userid) {
+    dg('[#newProfile]')
+    const prof = await AzureDB.selectUserProfile(userid)
+    const obj = { profile: prof }
+    await Firestore.set(`userdata/${userid}`, obj)
+  }
+
   static async mirrorProfile(userid) {
     dg('[#mirrorProfile]')
     const prof = await AzureDB.selectUserProfile(userid)

@@ -22,7 +22,6 @@ module.exports = class Recent {
         eid: b.eid,
         url: b.url,
         title: b.title,
-        url: b.url,
         users: b.count
       })
       await DB.delinsUserBookmark({
