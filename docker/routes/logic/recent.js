@@ -61,24 +61,11 @@ module.exports = class Recent {
     const { user } = params
     // [ eid, url, date, title, eurl, count, comment, user, timestamp, tags, stars, uri ]
     const bookmarks = await MyHatebu.get1YearBookmarks({ user })
-    for (const b of bookmarks) {
-      dg(`[#updateDB] eid:(${b.eid})`)
-      await DB.delinsHatenaBookmark({
-        eid: b.eid,
-        url: b.url,
-        title: b.title,
-        users: b.count
-      })
-      await DB.delinsUserBookmark({
-        userid: user,
-        eid: b.eid,
-        url: b.url,
-        timestamp: b.timestamp,
-        comment: b.comment,
-        tags: JSON.stringify(b.tags),
-        starlen: b.stars.length
-      })
-    }
+    await DB.openConnection()
+    await Promise.map(bookmarks, Recent.updateBookmarkRecord, {
+      concurrency: 5
+    })
+    await DB.closeConnection()
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
   }

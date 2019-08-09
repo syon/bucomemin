@@ -17,12 +17,12 @@ const options = {
 /**
  * はてブページからスクレイピング for 新規分析ユーザ登録
  * <停止条件>
- * １年前に到達 or 20ページ巡回
+ * １年前に到達 or 30ページ巡回
  */
 async function get1YearBookmarks({ user }) {
   dg('====[extractUserBookmarks]========================')
   let bookmarks = []
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 30; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
