@@ -21,7 +21,6 @@ module.exports = class Bridge {
   static async mirrorAnnualSummaly() {
     dg('[#mirrorAnnualSummaly]')
     const summaly = await AzureDB.selectAllAnnualSummaly()
-    dg(summaly)
     Object.keys(summaly).forEach(async userid => {
       const obj = { annual: summaly[userid] }
       await Firestore.update(`userdata/${userid}`, obj)

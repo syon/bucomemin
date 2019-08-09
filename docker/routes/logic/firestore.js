@@ -19,7 +19,6 @@ module.exports = class Firestore {
 
   static async update(path, obj) {
     dg(`[#update] ${path}`)
-    dg(obj)
     await db
       .doc(path)
       .update(obj)
