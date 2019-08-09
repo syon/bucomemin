@@ -9,6 +9,6 @@ module.exports = async () => {
   if (orders.length === 0) return
   for (const x of orders) {
     const user = x.userid
-    Recent.updateByUser(user)
+    await Recent.updateByUser(user)
   }
 }
