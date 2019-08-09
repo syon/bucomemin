@@ -233,6 +233,7 @@ module.exports = class DB {
     const sql = `insert into USER_BOOKMARKS values (@userid, @eid, @url, @timestamp, @comment, @tags, @starlen)`
     await req.query(sql).catch(e => {
       dg(sql)
+      dg(req)
       console.warn(e.toString())
     })
     // await db.close()
