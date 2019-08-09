@@ -8,27 +8,26 @@ const signBunny = require('sign-bunny')
 const dg = debug('app:cron')
 debug.enable('app:*')
 
-const orderHandler = require('./handler/orderHandler')
 const newbieHandler = require('./handler/newbieHandler')
 
 bunny('Hello! cron.js is running.')
 
 // https://crontab.guru/
 
-new CronJob(
-  '0 30 * * * *', // 毎時 30 分 00 秒
-  // '*/10 * * * * *', // 10秒置き
-  async () => {
-    bunny('Start Order Cron')
-    await orderHandler().catch(e => {
-      dg(e)
-    })
-    const timestamp = new Date().toLocaleString()
-    bunny(`Done! ${timestamp}`)
-  },
-  null,
-  true
-)
+// new CronJob(
+//   '0 30 * * * *', // 毎時 30 分 00 秒
+//   // '*/10 * * * * *', // 10秒置き
+//   async () => {
+//     bunny('Start Order Cron')
+//     await orderHandler().catch(e => {
+//       dg(e)
+//     })
+//     const timestamp = new Date().toLocaleString()
+//     bunny(`Done! ${timestamp}`)
+//   },
+//   null,
+//   true
+// )
 
 /**
  * Newbie
