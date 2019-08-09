@@ -1,5 +1,5 @@
 const debug = require('debug')
-const { db } = require('./firebaseAdmin')
+const { DB } = require('./firebaseAdmin')
 
 debug.enable('app:*')
 const dg = debug('app:firestore')
@@ -7,8 +7,7 @@ const dg = debug('app:firestore')
 module.exports = class Firestore {
   static async set(path, obj) {
     dg(`[#set] ${path}`)
-    await db
-      .doc(path)
+    await DB.doc(path)
       .set(obj)
       .catch(e => {
         console.error(path)
@@ -19,8 +18,7 @@ module.exports = class Firestore {
 
   static async update(path, obj) {
     dg(`[#update] ${path}`)
-    await db
-      .doc(path)
+    await DB.doc(path)
       .update(obj)
       .catch(e => {
         console.error(path)

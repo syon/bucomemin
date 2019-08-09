@@ -205,6 +205,7 @@ module.exports = class DB {
   }
 
   static async delinsUserBookmark(obj) {
+    if (!obj.userid) return
     await DB.deleteUserBookmark(obj)
     await DB.insertUserBookmark(obj)
   }
@@ -235,7 +236,7 @@ module.exports = class DB {
     const sql = `insert into USER_BOOKMARKS values (@userid, @eid, @url, @timestamp, @comment, @tags, @starlen)`
     await req.query(sql).catch(e => {
       dg(sql)
-      dg(req)
+      dg(req.parameters)
       console.warn(e.toString())
     })
     // await db.close()

@@ -6,7 +6,7 @@ admin.initializeApp({
   databaseURL: 'https://lobine-a91c5.firebaseio.com'
 })
 
-const db = admin.firestore()
-const storage = admin.storage()
+const DB = admin.firestore()
+const Storage = admin.storage()
 
-module.exports = { db, storage }
+module.exports = { DB, Storage }

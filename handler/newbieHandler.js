@@ -1,6 +1,6 @@
 const dg = require('debug')('app:newbieHandler')
 
-const { db } = require('../logic/firebaseAdmin')
+const { DB } = require('../logic/firebaseAdmin')
 const Ask = require('../logic/Ask')
 const Recent = require('../logic/recent')
 const Analyze = require('../logic/analyze')
@@ -25,8 +25,7 @@ module.exports = async () => {
 }
 
 async function fetchOrders() {
-  const result = await db
-    .collection('newbie')
+  const result = await DB.collection('newbie')
     .limit(10)
     .get()
     .then(querySnapshot => {
@@ -46,8 +45,7 @@ async function fetchOrders() {
 }
 
 async function removeOrder(id) {
-  return await db
-    .collection('newbie')
+  return await DB.collection('newbie')
     .doc(id)
     .delete()
     .catch(error => {
