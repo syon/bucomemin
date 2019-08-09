@@ -1,6 +1,6 @@
 require('debug').enable('app:*')
 const recentHandler = require('../handler/recentHandler')
-// const Recent = require('../routes/logic/recent')
+// const Recent = require('../logic/recent')
 
 ;(async () => {
   await recentHandler()

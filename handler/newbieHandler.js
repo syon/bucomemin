@@ -1,10 +1,10 @@
 const dg = require('debug')('app:newbieHandler')
-const { db } = require('../firebaseAdmin')
 
-const Ask = require('../routes/logic/Ask')
-const Recent = require('../routes/logic/recent')
-const Analyze = require('../routes/logic/analyze')
-const Bridge = require('../routes/logic/Bridge')
+const { db } = require('../logic/firebaseAdmin')
+const Ask = require('../logic/Ask')
+const Recent = require('../logic/recent')
+const Analyze = require('../logic/analyze')
+const Bridge = require('../logic/Bridge')
 
 module.exports = async () => {
   dg('[#newbieHandler] start')

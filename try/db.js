@@ -2,7 +2,7 @@ const debug = require('debug')
 const dg = debug('app:db')
 debug.enable('app:*')
 
-const DB = require('../routes/logic/DB')
+const DB = require('../logic/DB')
 
 ;(async () => {
   const user = 'Dy66'

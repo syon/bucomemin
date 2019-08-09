@@ -1,9 +1,9 @@
 const dg = require('debug')('app:recentHandler')
 
-const AzureDB = require('../routes/logic/DB')
-const Recent = require('../routes/logic/recent')
-const Analyze = require('../routes/logic/analyze')
-const Bridge = require('../routes/logic/Bridge')
+const AzureDB = require('../logic/DB')
+const Recent = require('../logic/recent')
+const Analyze = require('../logic/analyze')
+const Bridge = require('../logic/Bridge')
 
 /**
  * ---- MEMO ----

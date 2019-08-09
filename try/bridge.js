@@ -1,5 +1,5 @@
 require('debug').enable('app:*')
-const Bridge = require('../routes/logic/Bridge')
+const Bridge = require('../logic/Bridge')
 
 ;(async () => {
   await Bridge.mirrorProfile('syonx')

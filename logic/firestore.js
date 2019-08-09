@@ -1,5 +1,5 @@
 const debug = require('debug')
-const { db } = require('../../firebaseAdmin')
+const { db } = require('./firebaseAdmin')
 
 debug.enable('app:*')
 const dg = debug('app:firestore')

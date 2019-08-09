@@ -2,7 +2,7 @@ const debug = require('debug')
 const dg = debug('app:try')
 debug.enable('app:*')
 
-const Recent = require('../routes/logic/recent')
+const Recent = require('../logic/recent')
 
 ;(async () => {
   const params = { user: 'mikemade' }

@@ -2,7 +2,7 @@ const debug = require('debug')
 const dg = debug('app:try')
 debug.enable('app:*')
 
-const Analyze = require('../routes/logic/analyze')
+const Analyze = require('../logic/analyze')
 
 ;(async () => {
   await Analyze.main()
