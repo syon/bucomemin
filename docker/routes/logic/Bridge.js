@@ -1,18 +1,14 @@
 const dg = require('debug')('app:Bridge')
-const { db } = require('../../firebaseAdmin')
 const AzureDB = require('./DB')
+const Firestore = require('./firestore')
 const Storage = require('./storage')
 
 module.exports = class Bridge {
   static async mirrorProfile(userid) {
+    dg('[#mirrorProfile]')
     const prof = await AzureDB.selectUserProfile(userid)
-    dg(prof)
-    await db
-      .doc(`profile/${userid}`)
-      .set(prof)
-      .catch(e => {
-        console.error(e)
-      })
+    const obj = { profile: prof }
+    await Firestore.update(`userdata/${userid}`, obj)
   }
 
   static async mirrorAnnualSummaly() {
@@ -20,13 +16,8 @@ module.exports = class Bridge {
     const summaly = await AzureDB.selectAllAnnualSummaly()
     dg(summaly)
     Object.keys(summaly).forEach(async userid => {
-      const obj = summaly[userid]
-      await db
-        .doc(`annual/${userid}`)
-        .set(obj)
-        .catch(e => {
-          console.error(e)
-        })
+      const obj = { annual: summaly[userid] }
+      await Firestore.update(`userdata/${userid}`, obj)
     })
   }
 

@@ -1,9 +1,10 @@
 require('debug').enable('app:*')
-const bridgeHandler = require('../handler/bridgeHandler')
+const Bridge = require('../routes/logic/Bridge')
 
 ;(async () => {
-  const text = await bridgeHandler()
-  console.log(text)
+  await Bridge.mirrorProfile('syonx')
+  const result = await Bridge.mirrorAnnualSummaly()
+  console.log(result)
 })().catch(e => {
   // Deal with the fact the chain failed
   console.warn(e)
