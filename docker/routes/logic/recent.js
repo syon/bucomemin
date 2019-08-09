@@ -1,4 +1,5 @@
 const debug = require('debug')
+const Promise = require('bluebird')
 const MyHatebu = require('./myhatebu')
 const Bridge = require('./Bridge')
 const DB = require('./DB')
@@ -26,26 +27,33 @@ module.exports = class Recent {
     // TODO: Decode Username ???
     const { user } = params
     const bookmarks = await MyHatebu.getRecentBookmarks({ user })
-    for (const b of bookmarks) {
-      dg(`[#updateDB] eid:(${b.eid})`)
-      await DB.delinsHatenaBookmark({
-        eid: b.eid,
-        url: b.url,
-        title: b.title,
-        users: b.count
-      })
-      await DB.delinsUserBookmark({
-        userid: user,
-        eid: b.eid,
-        url: b.url,
-        timestamp: b.timestamp,
-        comment: b.comment,
-        tags: JSON.stringify(b.tags),
-        starlen: b.stars.length
-      })
-    }
+    await DB.openConnection()
+    await Promise.map(bookmarks, Recent.updateBookmarkRecord, {
+      concurrency: 5
+    })
+    await DB.closeConnection()
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
+  }
+
+  static async updateBookmarkRecord(bookmark) {
+    const b = bookmark
+    dg(`[#AzureDB] user:(${b.user}) eid:(${b.eid})`)
+    await DB.delinsHatenaBookmark({
+      eid: b.eid,
+      url: b.url,
+      title: b.title,
+      users: b.count
+    })
+    await DB.delinsUserBookmark({
+      userid: b.user,
+      eid: b.eid,
+      url: b.url,
+      timestamp: b.timestamp,
+      comment: b.comment,
+      tags: JSON.stringify(b.tags),
+      starlen: b.stars.length
+    })
   }
 
   static async updateYearly(params) {

@@ -4,7 +4,7 @@ const Recent = require('../routes/logic/recent')
 
 ;(async () => {
   // await recentHandler()
-  Recent.updateByUser('hiby')
+  Recent.updateByUser('aukusoe')
 })().catch(e => {
   console.warn(e)
 })

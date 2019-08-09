@@ -13,6 +13,14 @@ const config = {
 }
 
 module.exports = class DB {
+  static async openConnection() {
+    await db.connect(config)
+  }
+
+  static async closeConnection() {
+    await db.close()
+  }
+
   static async delinsUserProfile(obj) {
     await DB.deleteUserProfile(obj)
     await DB.insertUserProfile(obj)
@@ -167,19 +175,19 @@ module.exports = class DB {
 
   static async deleteHatenaBookmark(obj) {
     const { eid } = obj
-    await db.connect(config)
+    // await db.connect(config)
     // TODO: Injection
     const sql = `delete from HATENA_BOOKMARKS where eid = '${eid}'`
     await db.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
     })
-    await db.close()
+    // await db.close()
   }
 
   static async insertHatenaBookmark(obj) {
     const { eid, url, title, eurl, users } = obj
-    await db.connect(config)
+    // await db.connect(config)
     const req = new db.Request()
     req.input('eid', db.VarChar, eid)
     req.input('eurl', db.VarChar, eurl)
@@ -191,7 +199,7 @@ module.exports = class DB {
       dg(sql)
       console.warn(e.toString())
     })
-    await db.close()
+    // await db.close()
   }
 
   static async delinsUserBookmark(obj) {
@@ -201,19 +209,19 @@ module.exports = class DB {
 
   static async deleteUserBookmark(obj) {
     const { userid, eid } = obj
-    await db.connect(config)
+    // await db.connect(config)
     // TODO: Injection
     const sql = `delete from USER_BOOKMARKS where userid = '${userid}' and eid = '${eid}'`
     await db.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
     })
-    await db.close()
+    // await db.close()
   }
 
   static async insertUserBookmark(obj) {
     const { userid, eid, url, timestamp, comment, tags, starlen } = obj
-    await db.connect(config)
+    // await db.connect(config)
     const req = new db.Request()
     req.input('userid', db.VarChar, userid)
     req.input('eid', db.VarChar, eid)
@@ -227,7 +235,7 @@ module.exports = class DB {
       dg(sql)
       console.warn(e.toString())
     })
-    await db.close()
+    // await db.close()
   }
 
   static async delinsMonthlyTotalStarlenSum() {
