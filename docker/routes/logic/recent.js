@@ -2,6 +2,7 @@ const debug = require('debug')
 const MyHatebu = require('./myhatebu')
 const Bridge = require('./Bridge')
 const DB = require('./DB')
+const Ask = require('./Ask')
 
 debug.enable('app:*')
 const dg = debug('app:recent')
@@ -12,6 +13,15 @@ const dg = debug('app:recent')
  */
 
 module.exports = class Recent {
+  static async updateByUser(user) {
+    dg('$$$$ updateUser $$$$', user)
+    await Ask.updateUserProfile({ user })
+    await Bridge.newProfile(user)
+    await Bridge.mirrorProfile(user)
+    await Recent.updateRecent({ user })
+    await Bridge.mirrorBubble(user)
+  }
+
   static async updateRecent(params) {
     // TODO: Decode Username ???
     const { user } = params
@@ -49,7 +59,6 @@ module.exports = class Recent {
         eid: b.eid,
         url: b.url,
         title: b.title,
-        url: b.url,
         users: b.count
       })
       await DB.delinsUserBookmark({

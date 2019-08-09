@@ -80,7 +80,7 @@ module.exports = class DB {
       console.warn(e.toString())
     })
     await db.close()
-    return res.recordset[0]
+    return res.recordset[0] || {}
   }
 
   static async selectAllAnnualSummaly() {

@@ -1,9 +1,10 @@
 require('debug').enable('app:*')
-const recentHandler = require('../handler/recentHandler')
+// const recentHandler = require('../handler/recentHandler')
+const Recent = require('../routes/logic/recent')
 
 ;(async () => {
-  const result = await recentHandler()
-  console.log(result)
+  // await recentHandler()
+  Recent.updateByUser('hiby')
 })().catch(e => {
   console.warn(e)
 })

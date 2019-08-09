@@ -11,17 +11,22 @@ module.exports = class Firestore {
       .doc(path)
       .set(obj)
       .catch(e => {
-        console.error(e)
+        console.error(path)
+        console.error(obj)
+        console.error(e.toString())
       })
   }
 
   static async update(path, obj) {
     dg(`[#update] ${path}`)
+    dg(obj)
     await db
       .doc(path)
       .update(obj)
       .catch(e => {
-        console.error(e)
+        console.error(path)
+        console.error(obj)
+        console.error(e.toString())
       })
   }
 }
