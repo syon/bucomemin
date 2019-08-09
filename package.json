@@ -39,6 +39,7 @@
     "whatwg-url": "7.0.0"
   },
   "devDependencies": {
+    "babel-eslint": "10.0.2",
     "eslint-config-prettier": "4.1.0",
     "eslint-plugin-node": "8.0.1",
     "eslint-plugin-prettier": "3.0.1",
