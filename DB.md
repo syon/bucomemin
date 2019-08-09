@@ -33,18 +33,28 @@ b.hatena.ne.jp/userid/ ページに記載のプロフィールのスクレイピ
 |-----------------|-------------|------------------:|
 |userid           |varchar      |                 20|
 |name             |nvarchar     |                100|
-|total_bookmarks  |smallint     |                  -|
-|total_followers  |smallint     |                  -|
-|total_followings |smallint     |                  -|
+|total_bookmarks  |int          |                  -|
+|total_followers  |int          |                  -|
+|total_followings |int          |                  -|
+|total_star_yellow|int          |                  -|
+|total_star_green |int          |                  -|
+|total_star_red   |int          |                  -|
+|total_star_blue  |int          |                  -|
+|total_star_purple|int          |                  -|
 |timestamp        |smalldatetime|YYYY-MM-DD hh:mm:ss|
 
 ```sql
 create table USER_PROFILE (
   userid varchar(20),
   name nvarchar(100),
-  total_bookmarks smallint,
-  total_followers smallint,
-  total_followings smallint,
+  total_bookmarks int,
+  total_followers int,
+  total_followings int,
+  total_star_yellow int,
+  total_star_green int,
+  total_star_red int,
+  total_star_blue int,
+  total_star_purple int,
   last_update smalldatetime,
   PRIMARY KEY (userid)
 )

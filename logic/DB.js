@@ -46,17 +46,27 @@ module.exports = class DB {
       totalBookmarks,
       totalFollowers,
       totalFollowings,
+      totalStarYellow,
+      totalStarGreen,
+      totalStarRed,
+      totalStarBlue,
+      totalStarPurple,
       timestamp
     } = obj
     await db.connect(config)
     const req = new db.Request()
     req.input('userid', db.VarChar, userid)
     req.input('name', db.NVarChar, name)
-    req.input('totalBookmarks', db.SmallInt, totalBookmarks)
-    req.input('totalFollowers', db.SmallInt, totalFollowers)
-    req.input('totalFollowings', db.SmallInt, totalFollowings)
+    req.input('totalBookmarks', db.Int, totalBookmarks)
+    req.input('totalFollowers', db.Int, totalFollowers)
+    req.input('totalFollowings', db.Int, totalFollowings)
+    req.input('totalStarYellow', db.Int, totalStarYellow)
+    req.input('totalStarGreen', db.Int, totalStarGreen)
+    req.input('totalStarRed', db.Int, totalStarRed)
+    req.input('totalStarBlue', db.Int, totalStarBlue)
+    req.input('totalStarPurple', db.Int, totalStarPurple)
     req.input('timestamp', db.SmallDateTime, timestamp)
-    const sql = `insert into USER_PROFILE values (@userid, @name, @totalBookmarks, @totalFollowers, @totalFollowings, @timestamp)`
+    const sql = `insert into USER_PROFILE values (@userid, @name, @totalBookmarks, @totalFollowers, @totalFollowings, @totalStarYellow, @totalStarGreen, @totalStarRed, @totalStarBlue, @totalStarPurple, @timestamp)`
     await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())

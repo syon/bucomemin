@@ -82,7 +82,15 @@ class Star {
   static async getTotalCount({ uri }) {
     const encodedUri = Util.encodeURI(uri)
     options.uri = `${B.starAddOrigin}/blog.json?uri=${encodedUri}`
-    return await request(options)
+    return await request(options).catch(e => {
+      /* 403 Forbidden */
+      console.warn(e)
+    })
+  }
+
+  static async getTotalBookmarkStarCount({ user }) {
+    const uri = `http://b.hatena.ne.jp/${user}/`
+    return await Star.getTotalCount({ uri })
   }
 
   static getEntryCountImageURL({ user, yyyymmdd, eid }) {
