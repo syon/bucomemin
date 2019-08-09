@@ -56,6 +56,20 @@ module.exports = class DB {
     await db.close()
   }
 
+  static async selectUserProfile(userid) {
+    dg('[#selectUserProfile]')
+    await db.connect(config)
+    const req = new db.Request()
+    req.input('userid', db.VarChar, userid)
+    const sql = `select * from USER_PROFILE where userid = @userid`
+    const res = await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+    return res.recordset[0]
+  }
+
   static async selectAllAnnualSummaly() {
     dg('[#selectAllAnnualSummaly]')
     await db.connect(config)
@@ -71,7 +85,6 @@ module.exports = class DB {
       const val = /^\d+$/.test(r.attr_val) ? Number(r.attr_val) : r.attr_val
       dataSet[r.userid][r.attr_key] = val
     })
-    // これを返した先で Firebase に事前計算結果を格納すればよい
     return dataSet
   }
 

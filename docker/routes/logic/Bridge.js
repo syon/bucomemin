@@ -4,6 +4,17 @@ const AzureDB = require('./DB')
 const Storage = require('./storage')
 
 module.exports = class Bridge {
+  static async mirrorProfile(userid) {
+    const prof = await AzureDB.selectUserProfile(userid)
+    dg(prof)
+    await db
+      .doc(`profile/${userid}`)
+      .set(prof)
+      .catch(e => {
+        console.error(e)
+      })
+  }
+
   static async mirrorAnnualSummaly() {
     dg('[#mirrorAnnualSummaly]')
     const summaly = await AzureDB.selectAllAnnualSummaly()
@@ -26,7 +37,7 @@ module.exports = class Bridge {
     /* makeCalendarData */
     try {
       await Storage.saveJsonFile(dataSet, `calendar/${user}.json`)
-    } catch(e) {
+    } catch (e) {
       dg(e)
     }
   }
@@ -37,7 +48,7 @@ module.exports = class Bridge {
     dg(`[#mirrorBubble] (${user}) Annual bookmarks count:`, dataSet.length)
     try {
       await Storage.saveJsonFile(dataSet, `bubble/${user}.json`)
-    } catch(e) {
+    } catch (e) {
       dg(e)
     }
   }
