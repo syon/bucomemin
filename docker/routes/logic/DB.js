@@ -112,21 +112,23 @@ module.exports = class DB {
   static async selectAnnualBookmarksByUser(user) {
     dg(`[#selectAnnualBookmarksByUser] ${user}`)
     await db.connect(config)
-    // TODO: Injection
+    const req = new db.Request()
+    req.input('userid', db.VarChar, user)
     let sql = ''
     sql += ` select date, count(date) as count from (`
     sql += `   select CONVERT(VARCHAR(10), timestamp, 111) as date from USER_BOOKMARKS`
-    sql += `   where userid = '${user}'`
+    sql += `   where userid = @userid`
     sql += `   and timestamp >= dateadd(year, -1, getdate())`
     sql += `   and timestamp <  dateadd(day,   1, getdate())`
     sql += ` ) sub`
     sql += ` group by date`
     sql += ` order by date desc`
-    dg(sql)
-    const res = await db.query(sql)
+    const res = await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
     await db.close()
-    const result = res.recordset
-    return result
+    return res.recordset
   }
 
   static async selectAnnualCommentsByUser(user) {
