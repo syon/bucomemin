@@ -132,3 +132,59 @@ create table USER_MONTHLY_TOTAL (
   PRIMARY KEY (userid, yyyymm, attr_key)
 )
 ```
+
+
+## USER_ANNUAL_SUMMARY_VIEW
+
+```sql
+create view USER_ANNUAL_SUMMARY_VIEW
+as
+select
+  up.userid,
+  as1.attr_val as BOOKMARK_SUM,
+  as2.attr_val as COMMENTED_LEN,
+  as3.attr_val as STARRED_LEN,
+  as4.attr_val as ANOND_LEN,
+  floor(convert(float, as2.attr_val) / convert(float, as1.attr_val) * 100) as BUCOME_RATE,
+  floor(convert(float, as3.attr_val) / convert(float, as2.attr_val) * 100) as STARRED_RATE,
+  floor(convert(float, as4.attr_val) / convert(float, as1.attr_val) * 100) as ANOND_RATE
+from USER_PROFILE up
+  left outer join USER_ANNUAL_SUMMALY as1
+    on (as1.userid = up.userid and as1.attr_key = 'BOOKMARK_SUM')
+  left outer join USER_ANNUAL_SUMMALY as2
+    on (as2.userid = up.userid and as2.attr_key = 'COMMENTED_LEN')
+  left outer join USER_ANNUAL_SUMMALY as3
+    on (as3.userid = up.userid and as3.attr_key = 'STARRED_LEN')
+  left outer join USER_ANNUAL_SUMMALY as4
+    on (as4.userid = up.userid and as4.attr_key = 'ANOND_LEN')
+```
+
+
+## USER_RANKING_VIEW
+
+```sql
+create view USER_RANKING_VIEW
+as
+select
+  up.userid,
+  up.name,
+  up.total_bookmarks,
+  up.total_followers,
+  up.total_followings,
+  up.total_star_yellow,
+  up.total_star_green,
+  up.total_star_red,
+  up.total_star_blue,
+  up.total_star_purple,
+  up.last_update,
+  v.BOOKMARK_SUM,
+  v.COMMENTED_LEN,
+  v.STARRED_LEN,
+  v.ANOND_LEN,
+  v.BUCOME_RATE,
+  v.STARRED_RATE,
+  v.ANOND_RATE
+from USER_PROFILE up
+  left outer join USER_ANNUAL_SUMMARY_VIEW v
+    on (v.userid = up.userid)
+```
