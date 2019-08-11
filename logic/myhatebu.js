@@ -16,25 +16,44 @@ const options = {
 
 /**
  * はてブページからスクレイピング for 新規分析ユーザ登録
+ * <対象条件>
+ * 指定タイムスタンプより過去
  * <停止条件>
  * １年前に到達 or 30ページ巡回
  */
-async function get1YearBookmarks({ user }) {
+async function get1YearBookmarks({ user, timestamp }) {
   dg('====[extractUserBookmarks]========================')
+  const oneYearAgo = moment().subtract(1, 'year')
   let bookmarks = []
-  for (let i = 0; i < 30; i++) {
+  let maxPageNum = 20
+  if (timestamp < oneYearAgo) {
+    maxPageNum = 0
+  }
+  const startDate = timestamp ? moment(timestamp) : moment()
+  for (let i = 0; i < maxPageNum; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
     const list = await extractUserBookmarks(options)
-    bookmarks = bookmarks.concat(list)
-    dg(`Collected:`, bookmarks.length)
+    if (list.length === 0) {
+      break
+    }
+    const targets = list.filter(x => {
+      return moment(x.date, 'YYYY/MM/DD') < startDate
+    })
+    if (targets.length > 0) {
+      dg(`Collected:`, bookmarks.length)
+      bookmarks = bookmarks.concat(targets)
+    } else {
+      maxPageNum++
+    }
     const old = bookmarks.find(x => {
-      const oneYearAgo = moment().subtract(1, 'year')
       return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
     })
     if (old) break
+    if (bookmarks.length > 1000) break
   }
+  dg(`Total Collected:`, bookmarks.length)
 
   dg('====[extractBucomeDetail]========================')
   const exBookmarks = []
@@ -68,6 +87,7 @@ async function get1YearBookmarks({ user }) {
  * 得るべきデータは eid, 記事URL, date のみ。それ以外はAPIから取得する。
  */
 async function extractUserBookmarks(options) {
+  await new Promise(r => setTimeout(r, 1000))
   // TODO: 本当にすべて取得できてる？ Ajaxあり
   return await request(options)
     .then(function($) {

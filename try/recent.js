@@ -4,7 +4,7 @@ const recentHandler = require('../handler/recentHandler')
 
 ;(async () => {
   await recentHandler()
-  // await Recent.updateByUser('aukusoe')
+  // await Recent.updateYearly({ user: 'vlxst1224' })
 })().catch(e => {
   console.warn(e)
 })

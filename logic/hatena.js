@@ -171,6 +171,7 @@ class Star {
 
 class Custom {
   /** Hatenaサーバへの負荷が心配 */
+  // TODO: ブクマページの「リンク」から行けるコメントページのほうが早いかも
   static async extractBucomeDetail(detail, user) {
     if (!detail.bookmarks) return {}
     const b = detail.bookmarks.filter(x => x.user === user)

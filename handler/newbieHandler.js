@@ -17,11 +17,13 @@ module.exports = async () => {
     await Bridge.newProfile(user)
     await Bridge.mirrorProfile(user)
     await Recent.updateYearly({ user })
+    await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
     await removeOrder(x.id)
   }
   await Analyze.main()
   await Bridge.mirrorAnnualSummaly()
+  await Bridge.mirrorRanking()
 }
 
 async function fetchOrders() {
