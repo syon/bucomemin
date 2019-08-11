@@ -27,6 +27,12 @@ module.exports = class Bridge {
     })
   }
 
+  static async mirrorRanking() {
+    dg('[#mirrorRanking]')
+    const ranking = await AzureDB.selectRanking()
+    await Storage.saveJsonFile(ranking, `userdatalist/ranking.json`)
+  }
+
   static async mirrorCalendar(user) {
     dg(`[#mirrorCalendar] (${user}) start`)
     const dataSet = await AzureDB.selectAnnualBookmarksByUser(user)
@@ -48,11 +54,5 @@ module.exports = class Bridge {
     } catch (e) {
       dg(e)
     }
-  }
-
-  static async mirrorAllProfiles() {
-    dg('[#mirrorAllProfiles]')
-    const profs = await AzureDB.selectAllProfiles()
-    await Storage.saveJsonFile(profs, `userdatalist/profiles.json`)
   }
 }

@@ -74,11 +74,11 @@ module.exports = class DB {
     await db.close()
   }
 
-  static async selectAllProfiles() {
-    dg('[#selectAllProfiles]')
+  static async selectRanking() {
+    dg('[#selectRanking]')
     await db.connect(config)
     const req = new db.Request()
-    const sql = `select * from USER_PROFILE order by userid asc`
+    const sql = `select * from USER_RANKING_VIEW order by ANNUAL_STARRED_RATE desc`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())

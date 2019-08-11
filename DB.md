@@ -177,13 +177,13 @@ select
   up.total_star_blue,
   up.total_star_purple,
   up.last_update,
-  v.BOOKMARK_SUM,
-  v.COMMENTED_LEN,
-  v.STARRED_LEN,
-  v.ANOND_LEN,
-  v.BUCOME_RATE,
-  v.STARRED_RATE,
-  v.ANOND_RATE
+  convert(int, v.BOOKMARK_SUM) as ANNUAL_BOOKMARKS,
+  convert(int, v.COMMENTED_LEN) as ANNUAL_COMMENTS,
+  convert(int, v.STARRED_LEN) as ANNUAL_STARRED,
+  convert(int, v.ANOND_LEN) as ANNUAL_ANONDS,
+  v.BUCOME_RATE as ANNUAL_BUCOME_RATE,
+  v.STARRED_RATE as ANNUAL_STARRED_RATE,
+  v.ANOND_RATE as ANNUAL_ANOND_RATE
 from USER_PROFILE up
   left outer join USER_ANNUAL_SUMMARY_VIEW v
     on (v.userid = up.userid)

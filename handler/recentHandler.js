@@ -25,4 +25,5 @@ module.exports = async () => {
   }
   await Analyze.main()
   await Bridge.mirrorAnnualSummaly()
+  await Bridge.mirrorRanking()
 }
