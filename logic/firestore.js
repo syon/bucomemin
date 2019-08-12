@@ -44,7 +44,6 @@ module.exports = class Firestore {
       .catch(error => {
         dg(`Firebase NG`, error)
       })
-    dg(result)
     return result
   }
 }

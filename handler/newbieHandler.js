@@ -10,7 +10,8 @@ const Firestore = require('../logic/firestore')
 module.exports = async () => {
   dg('[#newbieHandler] start')
   const docSet = await Firestore.fetchDocSet('newbie')
-  const orders = Object.keys(docSet).map(x => ({ id: x.id, ...docSet[x.id] }))
+  const orders = Object.keys(docSet).map(x => ({ id: x, ...docSet[x] }))
+  dg(orders)
   if (orders.length === 0) return
   for (const x of orders) {
     const user = x.id
