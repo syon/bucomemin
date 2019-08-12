@@ -23,13 +23,13 @@ const options = {
  */
 async function get1YearBookmarks({ user, timestamp }) {
   dg('====[extractUserBookmarks]========================')
-  const oneYearAgo = moment().subtract(1, 'year')
   let bookmarks = []
   let maxPageNum = 20
-  if (timestamp < oneYearAgo) {
+  const oneYearAgo = moment().subtract(1, 'year')
+  const startDate = timestamp ? moment(timestamp) : moment()
+  if (startDate < oneYearAgo) {
     maxPageNum = 0
   }
-  const startDate = timestamp ? moment(timestamp) : moment()
   for (let i = 0; i < maxPageNum; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
@@ -42,8 +42,8 @@ async function get1YearBookmarks({ user, timestamp }) {
       return moment(x.date, 'YYYY/MM/DD') < startDate
     })
     if (targets.length > 0) {
-      dg(`Collected:`, bookmarks.length)
       bookmarks = bookmarks.concat(targets)
+      dg(`Collected:`, bookmarks.length)
     } else {
       maxPageNum++
     }
