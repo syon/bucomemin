@@ -16,42 +16,30 @@ const options = {
 
 /**
  * はてブページからスクレイピング for 新規分析ユーザ登録
- * <対象条件>
- * 指定タイムスタンプより過去
  * <停止条件>
- * １年前に到達 or 30ページ巡回
+ * １年前に到達 or 200ページ巡回
  */
-async function get1YearBookmarks({ user, timestamp }) {
+async function get1YearBookmarks({ user }) {
   dg('====[extractUserBookmarks]========================')
   let bookmarks = []
-  let maxPageNum = 20
-  const oneYearAgo = moment().subtract(1, 'year')
-  const startDate = timestamp ? moment(timestamp) : moment()
-  if (startDate < oneYearAgo) {
-    maxPageNum = 0
-  }
-  for (let i = 0; i < maxPageNum; i++) {
+  for (let i = 0; i < 200; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
-    const list = await extractUserBookmarks(options)
-    if (list.length === 0) {
+    const targets = await extractUserBookmarks(options)
+    if (targets.length === 0) {
       break
     }
-    const targets = list.filter(x => {
-      return moment(x.date, 'YYYY/MM/DD') < startDate
-    })
     if (targets.length > 0) {
       bookmarks = bookmarks.concat(targets)
-      dg(`Collected:`, bookmarks.length)
-    } else {
-      maxPageNum++
+      const lastOne = targets[targets.length - 1]
+      dg(`Collected ${bookmarks.length}, last one date: ${lastOne.date}`)
     }
     const old = bookmarks.find(x => {
+      const oneYearAgo = moment().subtract(1, 'year')
       return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
     })
     if (old) break
-    if (bookmarks.length > 1000) break
   }
   dg(`Total Collected:`, bookmarks.length)
 
