@@ -5,10 +5,12 @@ const Ask = require('../logic/Ask')
 const Recent = require('../logic/recent')
 const Analyze = require('../logic/analyze')
 const Bridge = require('../logic/Bridge')
+const Firestore = require('../logic/firestore')
 
 module.exports = async () => {
   dg('[#newbieHandler] start')
-  const orders = await fetchOrders()
+  const docSet = await Firestore.fetchDocSet('newbie')
+  const orders = Object.keys(docSet).map(x => ({ id: x.id, ...docSet[x.id] }))
   if (orders.length === 0) return
   for (const x of orders) {
     const user = x.id
@@ -24,26 +26,6 @@ module.exports = async () => {
   await Analyze.main()
   await Bridge.mirrorAnnualSummaly()
   await Bridge.mirrorRanking()
-}
-
-async function fetchOrders() {
-  const result = await DB.collection('newbie')
-    .limit(10)
-    .get()
-    .then(querySnapshot => {
-      const orders = []
-      querySnapshot.forEach(doc => {
-        const id = doc.id
-        const obj = doc.data()
-        orders.push({ id, ...obj })
-      })
-      return orders
-    })
-    .catch(error => {
-      dg(`Firebase NG`, error)
-    })
-  dg(result)
-  return result
 }
 
 async function removeOrder(id) {

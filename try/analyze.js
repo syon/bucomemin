@@ -5,13 +5,8 @@ debug.enable('app:*')
 const Analyze = require('../logic/analyze')
 
 ;(async () => {
-  await Analyze.main()
-    .then(result => {
-      dg(result)
-    })
-    .catch(e => {
-      dg(e)
-    })
+  const result = await Analyze.main()
+  dg(result)
 })().catch(e => {
-  // Deal with the fact the chain failed
+  dg(e)
 })

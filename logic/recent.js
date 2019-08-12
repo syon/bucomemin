@@ -33,8 +33,6 @@ module.exports = class Recent {
       concurrency: 5
     })
     await DB.closeConnection()
-    await Bridge.mirrorCalendar(user)
-    await Bridge.mirrorBubble(user)
   }
 
   static async updateBookmarkRecord(bookmark) {

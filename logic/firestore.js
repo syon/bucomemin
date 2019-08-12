@@ -26,4 +26,25 @@ module.exports = class Firestore {
         console.error(e.toString())
       })
   }
+
+  static async fetchDocSet(collection) {
+    dg(`[#fetchDocSet] ${collection}`)
+    const result = await DB.collection(collection)
+      // .limit(10)
+      .get()
+      .then(querySnapshot => {
+        const docSet = {}
+        querySnapshot.forEach(doc => {
+          const id = doc.id
+          const obj = doc.data()
+          docSet[id] = obj
+        })
+        return docSet
+      })
+      .catch(error => {
+        dg(`Firebase NG`, error)
+      })
+    dg(result)
+    return result
+  }
 }
