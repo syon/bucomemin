@@ -15,7 +15,7 @@ module.exports = async () => {
   if (orders.length === 0) return
   for (const x of orders) {
     const user = x.id
-    dg('$$$$ Annual summary $$$$', user)
+    dg(`$$$$$$$$ N E W B I E  - ${user} -  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$`)
     await Ask.updateUserProfile({ user })
     await Bridge.newProfile(user)
     await Bridge.mirrorProfile(user)
