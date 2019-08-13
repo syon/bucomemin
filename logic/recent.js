@@ -40,8 +40,9 @@ module.exports = class Recent {
     dg(`[#AzureDB] user:(${b.user}) eid:(${b.eid})`)
     await DB.delinsHatenaBookmark({
       eid: b.eid,
-      url: b.url,
+      eurl: b.eurl,
       title: b.title,
+      url: b.url,
       users: b.count
     })
     await DB.delinsUserBookmark({
