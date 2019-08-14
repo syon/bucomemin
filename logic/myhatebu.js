@@ -16,20 +16,26 @@ const options = {
 
 /**
  * はてブページからスクレイピング for 新規分析ユーザ登録
+ * <対象条件>
+ * 指定タイムスタンプより過去
  * <停止条件>
  * １年前に到達 or 200ページ巡回
  */
-async function get1YearBookmarks({ user }) {
+async function get1YearBookmarks({ user, timestamp }) {
   dg('====[extractUserBookmarks]========================')
   let bookmarks = []
-  for (let i = 0; i < 200; i++) {
+  const startDate = timestamp ? moment(timestamp) : moment()
+  for (let i = 0; i < 500; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
     options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
-    const targets = await extractUserBookmarks(options)
+    let targets = await extractUserBookmarks(options)
     if (targets.length === 0) {
       break
     }
+    targets = targets.filter(x => {
+      return moment(x.date, 'YYYY/MM/DD') < startDate
+    })
     if (targets.length > 0) {
       bookmarks = bookmarks.concat(targets)
       const lastOne = targets[targets.length - 1]
@@ -43,7 +49,20 @@ async function get1YearBookmarks({ user }) {
   }
   dg(`Total Collected:`, bookmarks.length)
 
-  dg('====[extractBucomeDetail]========================')
+  const exBookmarks = extendBucomeDetail(bookmarks, user)
+  return exBookmarks
+
+  // dg('====[scrapeHatebuPageData]========================')
+  // // TODO: はてブページのマスタとしてユーザー配下ではなくロビネライクに管理すべき
+  // const results = []
+  // for (const ex of recentBookmarksEx) {
+  //   const bucome = await scrapeHatebuPageData(ex.hatebuPage)
+  //   results.push({ ...ex, bucome })
+  // }
+  // return results
+}
+
+async function extendBucomeDetail(bookmarks, user) {
   const exBookmarks = []
   for (let i = 0; i < bookmarks.length; i++) {
     // eid, url, date
@@ -57,17 +76,7 @@ async function get1YearBookmarks({ user }) {
     bucome.stars = bucome.stars || []
     exBookmarks.push({ ...entry, title, eurl, count, ...bucome })
   }
-
   return exBookmarks
-
-  // dg('====[scrapeHatebuPageData]========================')
-  // // TODO: はてブページのマスタとしてユーザー配下ではなくロビネライクに管理すべき
-  // const results = []
-  // for (const ex of recentBookmarksEx) {
-  //   const bucome = await scrapeHatebuPageData(ex.hatebuPage)
-  //   results.push({ ...ex, bucome })
-  // }
-  // return results
 }
 
 /**
@@ -75,7 +84,6 @@ async function get1YearBookmarks({ user }) {
  * 得るべきデータは eid, 記事URL, date のみ。それ以外はAPIから取得する。
  */
 async function extractUserBookmarks(options) {
-  await new Promise(r => setTimeout(r, 1000))
   // TODO: 本当にすべて取得できてる？ Ajaxあり
   return await request(options)
     .then(function($) {
@@ -127,18 +135,7 @@ async function getRecentBookmarks({ user }) {
       break
     }
   }
-  const exBookmarks = []
-  for (let i = 0; i < bookmarks.length; i++) {
-    const entry = bookmarks[i]
-    dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
-    // title, url, bookmarks, entry_url, eid, count, screenshot
-    const detail = await Hatena.Bookmark.getEntryLite(entry.url)
-    const { title, entry_url: eurl, count } = detail
-    // comment, user, tags, timestamp, uri, stars, can_comment
-    const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
-    bucome.stars = bucome.stars || []
-    exBookmarks.push({ ...entry, title, eurl, count, ...bucome })
-  }
+  const exBookmarks = extendBucomeDetail(bookmarks, user)
   return exBookmarks
 }
 

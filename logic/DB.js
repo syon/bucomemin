@@ -100,6 +100,24 @@ module.exports = class DB {
     return res.recordset
   }
 
+  static async selectOldestTimestampBookmark(userid) {
+    dg('[#selectOldestTimestampBookmark]')
+    await db.connect(config)
+    const req = new db.Request()
+    req.input('userid', db.VarChar, userid)
+    let sql = ''
+    sql += ` select min(timestamp) as timestamp from user_bookmarks`
+    sql += ` where userid = @userid`
+    sql += `   and timestamp >= dateadd(year, -1, getdate())`
+    sql += `   and timestamp <  dateadd(day,   1, getdate())`
+    const res = await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+    return res.recordset[0].timestamp
+  }
+
   static async selectUserProfile(userid) {
     dg('[#selectUserProfile]')
     await db.connect(config)
