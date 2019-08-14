@@ -146,8 +146,7 @@ async function getFirstBookmarkDate(user, totalBookmarkCount) {
     const list = await extractUserBookmarks(user, num - i)
     if (list.length > 0) {
       const first = list.pop()
-      dg(first)
-      return first
+      return first.date
     }
   }
   return null

@@ -14,6 +14,7 @@ module.exports = class Ask {
       user,
       ov ? ov.user.total_bookmarks : null
     )
+    dg(`${user}'s birthday: ${fd}`)
     dg(`Hatena.Star.getTotalBookmarkStarCount...`)
     const st = await Hatena.Star.getTotalBookmarkStarCount({ user })
     const timestamp = new Date()
