@@ -19,9 +19,15 @@ const B = {
 class User {
   static async getProfile({ user }) {
     const url = `https://pf-api.hatena.com/profile/profiles?name=${user}`
-    const str = await request(url)
-    /* name, nickname, profile_icon_url, profile_image_url */
-    return JSON.parse(str)[user]
+    try {
+      const str = await request(url)
+      /* name, nickname, profile_icon_url, profile_image_url */
+      return JSON.parse(str)[user]
+    } catch (e) {
+      console.warn(`Failed to User.getProfile: ${user}`)
+      console.warn(e)
+      return {}
+    }
   }
 
   static getProfileImageURL(user) {
@@ -44,7 +50,11 @@ class Bookmark {
 
   static async getOverview(user) {
     options.uri = `https://b.hatena.ne.jp/api/internal/cambridge/user/${user}`
-    return await request(options)
+    return await request(options).catch(e => {
+      console.warn(`Failed to Bookmark.getOverview: ${user}`)
+      console.warn(e.toString())
+      return null
+    })
   }
 
   static async getEntryCount(rawPageUrl) {
