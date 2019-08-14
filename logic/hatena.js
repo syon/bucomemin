@@ -100,7 +100,10 @@ class Star {
 
   static async getTotalBookmarkStarCount({ user }) {
     const uri = `http://b.hatena.ne.jp/${user}/`
-    return await Star.getTotalCount({ uri })
+    return await Star.getTotalCount({ uri }).catch(e => {
+      console.warn(e.toString())
+      return null
+    })
   }
 
   static getEntryCountImageURL({ user, yyyymmdd, eid }) {
