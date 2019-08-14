@@ -28,8 +28,7 @@ async function get1YearBookmarks({ user, timestamp }) {
   for (let i = 0; i < 500; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
-    options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
-    let targets = await extractUserBookmarks(options)
+    let targets = await extractUserBookmarks(user, num)
     if (targets.length === 0) {
       break
     }
@@ -83,8 +82,10 @@ async function extendBucomeDetail(bookmarks, user) {
  * このメソッドの責務は「対象ユーザが何のページをブックマークしたか」のみ。
  * 得るべきデータは eid, 記事URL, date のみ。それ以外はAPIから取得する。
  */
-async function extractUserBookmarks(options) {
+async function extractUserBookmarks(user, page) {
   // TODO: 本当にすべて取得できてる？ Ajaxあり
+  options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${page}`
+  dg('<SCRAPING>', options.uri)
   return await request(options)
     .then(function($) {
       const list = $('.bookmark-item').map((i, el) => {
@@ -122,8 +123,7 @@ async function getRecentBookmarks({ user }) {
   for (let i = 0; i < 20; i++) {
     const num = i + 1
     dg(`Page ${num} ...`)
-    options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${num}`
-    const list = await extractUserBookmarks(options)
+    const list = await extractUserBookmarks(user, num)
     bookmarks = bookmarks.concat(list)
     dg(`Collected:`, bookmarks.length)
     const old = bookmarks.find(x => {
@@ -139,4 +139,18 @@ async function getRecentBookmarks({ user }) {
   return exBookmarks
 }
 
-module.exports = { get1YearBookmarks, getRecentBookmarks }
+async function getFirstBookmarkDate(user, totalBookmarkCount) {
+  if (!totalBookmarkCount) return null
+  const num = Math.floor(totalBookmarkCount / 20) + 1
+  for (let i = 0; i < 10; i++) {
+    const list = await extractUserBookmarks(user, num - i)
+    if (list.length > 0) {
+      const first = list.pop()
+      dg(first)
+      return first
+    }
+  }
+  return null
+}
+
+module.exports = { get1YearBookmarks, getRecentBookmarks, getFirstBookmarkDate }

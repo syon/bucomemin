@@ -1,7 +1,12 @@
 require('debug').enable('app:*')
 const Ask = require('../logic/Ask')
 
-const arr = ['afuro0307', 'anguilla', 'apipix', 'aukusoe', 'citron_908']
+/**
+ * Private Mode:
+ *   citron_908
+ */
+const arr = ['afuro0307']
+// ['afuro0307', 'anguilla', 'apipix', 'aukusoe', 'citron_908']
 
 ;(async () => {
   for (const user of arr) {
