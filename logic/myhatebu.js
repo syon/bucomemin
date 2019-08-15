@@ -27,7 +27,6 @@ async function get1YearBookmarks({ user, timestamp }) {
   const startDate = timestamp ? moment(timestamp) : moment()
   for (let i = 0; i < 500; i++) {
     const num = i + 1
-    dg(`Page ${num} ...`)
     let targets = await extractUserBookmarks(user, num)
     if (targets.length === 0) {
       break
