@@ -5,7 +5,7 @@ debug.enable('app:*')
 const Recent = require('../logic/recent')
 
 ;(async () => {
-  const params = { user: 'mikemade' }
+  const params = { user: 'hirahirahirara' }
   const result = await Recent.updateYearly(params)
   dg(result)
 })().catch(e => {

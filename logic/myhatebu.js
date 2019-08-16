@@ -1,3 +1,4 @@
+const Promise = require('bluebird')
 const request = require('request-promise-native')
 const cheerio = require('cheerio')
 const moment = require('moment')
@@ -47,7 +48,7 @@ async function get1YearBookmarks({ user, timestamp }) {
   }
   dg(`Total Collected:`, bookmarks.length)
 
-  const exBookmarks = extendBucomeDetail(bookmarks, user)
+  const exBookmarks = await extendBucomeDetail(bookmarks, user)
   return exBookmarks
 
   // dg('====[scrapeHatebuPageData]========================')
@@ -61,20 +62,17 @@ async function get1YearBookmarks({ user, timestamp }) {
 }
 
 async function extendBucomeDetail(bookmarks, user) {
-  const exBookmarks = []
-  for (let i = 0; i < bookmarks.length; i++) {
-    // eid, url, date
-    const entry = bookmarks[i]
-    dg(`[${i + 1}/${bookmarks.length}] (${entry.date}) ${entry.url}`)
+  const theFunc = async entry => {
+    dg(`(${entry.date}) ${entry.url}`)
     // title, url, bookmarks, entry_url, eid, count, screenshot
     const detail = await Hatena.Bookmark.getEntryLite(entry.url)
     const { title, entry_url: eurl, count } = detail
     // comment, user, tags, timestamp, uri, stars, can_comment
     const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
     bucome.stars = bucome.stars || []
-    exBookmarks.push({ ...entry, title, eurl, count, ...bucome })
+    return { ...entry, title, eurl, count, ...bucome }
   }
-  return exBookmarks
+  return await Promise.map(bookmarks, theFunc, { concurrency: 10 })
 }
 
 /**
@@ -134,7 +132,7 @@ async function getRecentBookmarks({ user }) {
       break
     }
   }
-  const exBookmarks = extendBucomeDetail(bookmarks, user)
+  const exBookmarks = await extendBucomeDetail(bookmarks, user)
   return exBookmarks
 }
 
