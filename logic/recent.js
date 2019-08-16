@@ -59,9 +59,8 @@ module.exports = class Recent {
   static async updateYearly(params) {
     // TODO: Decode Username ???
     const { user } = params
-    const timestamp = await DB.selectOldestTimestampBookmark(user)
     // [ eid, url, date, title, eurl, count, comment, user, timestamp, tags, stars, uri ]
-    const bookmarks = await MyHatebu.get1YearBookmarks({ user, timestamp })
+    const bookmarks = await MyHatebu.get1YearBookmarks({ user })
     await DB.openConnection()
     await Promise.map(bookmarks, Recent.updateBookmarkRecord, {
       concurrency: 5

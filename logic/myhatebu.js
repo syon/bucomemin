@@ -4,6 +4,7 @@ const cheerio = require('cheerio')
 const moment = require('moment')
 const dg = require('debug')('app:myhatebu')
 const Hatena = require('./hatena')
+const DB = require('./DB')
 // const { scrapeHatebuPageData } = require('./bHatena')
 
 const options = {
@@ -22,31 +23,33 @@ const options = {
  * <停止条件>
  * １年前に到達 or 200ページ巡回
  */
-async function get1YearBookmarks({ user, timestamp }) {
+async function get1YearBookmarks({ user }) {
   dg('====[extractUserBookmarks]========================')
+  const oneYearAgo = moment().subtract(1, 'year')
   let bookmarks = []
-  const startDate = timestamp ? moment(timestamp) : moment()
   for (let i = 0; i < 500; i++) {
     const num = i + 1
     let targets = await extractUserBookmarks(user, num)
     if (targets.length === 0) {
+      dg('Nothing found.')
       break
     }
+    const old = targets.find(x => {
+      return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
+    })
+    if (old) break
     targets = targets.filter(x => {
-      return moment(x.date, 'YYYY/MM/DD') < startDate
+      return moment(x.date, 'YYYY/MM/DD') >= oneYearAgo
     })
     if (targets.length > 0) {
       bookmarks = bookmarks.concat(targets)
       const lastOne = targets[targets.length - 1]
       dg(`Collected ${bookmarks.length}, last one date: ${lastOne.date}`)
     }
-    const old = bookmarks.find(x => {
-      const oneYearAgo = moment().subtract(1, 'year')
-      return moment(x.date, 'YYYY/MM/DD') < oneYearAgo
-    })
-    if (old) break
   }
   dg(`Total Collected:`, bookmarks.length)
+
+  bookmarks = await filterAlreadySaved(bookmarks, user)
 
   const exBookmarks = await extendBucomeDetail(bookmarks, user)
   return exBookmarks
@@ -61,6 +64,11 @@ async function get1YearBookmarks({ user, timestamp }) {
   // return results
 }
 
+async function filterAlreadySaved(bookmarks, user) {
+  const eids = await DB.selectAnnualEidsByUser(user)
+  return bookmarks.filter(x => !eids.includes(x.eid))
+}
+
 async function extendBucomeDetail(bookmarks, user) {
   const theFunc = async entry => {
     dg(`(${entry.date}) ${entry.url}`)
@@ -72,7 +80,7 @@ async function extendBucomeDetail(bookmarks, user) {
     bucome.stars = bucome.stars || []
     return { ...entry, title, eurl, count, ...bucome }
   }
-  return await Promise.map(bookmarks, theFunc, { concurrency: 10 })
+  return await Promise.map(bookmarks, theFunc, { concurrency: 5 })
 }
 
 /**
