@@ -91,7 +91,7 @@ module.exports = class DB {
     dg('[#selectTargetsForUpdate]')
     await db.connect(config)
     const req = new db.Request()
-    const sql = `select userid from USER_PROFILE order by last_update`
+    const sql = `select userid from USER_PROFILE where last_update < dateadd(day, -1, getdate()) order by last_update`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
