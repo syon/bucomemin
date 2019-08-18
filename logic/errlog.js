@@ -7,6 +7,6 @@ const dg = debug('app:ERROR')
 module.exports = class ErrLog {
   static async dump(filepath, msg) {
     dg(msg)
-    fs.appendFileSync(filepath, msg)
+    fs.appendFileSync(filepath, msg + '\n')
   }
 }
