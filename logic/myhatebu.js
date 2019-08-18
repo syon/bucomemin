@@ -5,6 +5,7 @@ const moment = require('moment')
 const dg = require('debug')('app:myhatebu')
 const Hatena = require('./hatena')
 const DB = require('./DB')
+const ErrLog = require('./errlog')
 // const { scrapeHatebuPageData } = require('./bHatena')
 
 const options = {
@@ -76,7 +77,13 @@ async function extendBucomeDetail(bookmarks, user) {
     const detail = await Hatena.Bookmark.getEntryLite(entry.url)
     const { title, entry_url: eurl, count } = detail
     // comment, user, tags, timestamp, uri, stars, can_comment
-    const bucome = await Hatena.Custom.extractBucomeDetail(detail, user)
+    const bucome = await Hatena.Custom.extractBucomeDetail(detail, user).catch(
+      e => {
+        const msg = `[user:${user}][eid:${entry.eid}] ${e.toString().trim()}]`
+        ErrLog.dump('./errors/myhatebu.log', msg)
+        return {}
+      }
+    )
     bucome.stars = bucome.stars || []
     return { ...entry, title, eurl, count, ...bucome }
   }
