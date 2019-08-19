@@ -8,15 +8,6 @@ const DB = require('./DB')
 const ErrLog = require('./errlog')
 // const { scrapeHatebuPageData } = require('./bHatena')
 
-const options = {
-  headers: {
-    'User-Agent': 'Request'
-  },
-  transform: function(body) {
-    return cheerio.load(body)
-  }
-}
-
 /**
  * はてブページからスクレイピング for 新規分析ユーザ登録
  * <対象条件>
@@ -51,6 +42,7 @@ async function get1YearBookmarks({ user }) {
   dg(`Total Collected:`, bookmarks.length)
 
   bookmarks = await filterAlreadySaved(bookmarks, user)
+  dg(`Total Filtered:`, bookmarks.length)
 
   const exBookmarks = await extendBucomeDetail(bookmarks, user)
   return exBookmarks
@@ -96,28 +88,39 @@ async function extendBucomeDetail(bookmarks, user) {
  */
 async function extractUserBookmarks(user, page) {
   // TODO: 本当にすべて取得できてる？ Ajaxあり
-  options.uri = `https://b.hatena.ne.jp/${user}/bookmark?page=${page}`
+  const options = {
+    uri: `https://b.hatena.ne.jp/${user}/bookmark?page=${page}`,
+    headers: {
+      'User-Agent': 'Request'
+    },
+    transform: body => {
+      try {
+        return cheerio.load(body)
+      } catch (e) {
+        dg('++++ Failed to parse cheerio ++++++++++++++++++')
+        dg('++++', options.uri)
+        dg(e)
+        return null
+      }
+    }
+  }
   dg('<SCRAPING>', options.uri)
-  return await request(options)
-    .then(function($) {
-      const list = $('.bookmark-item').map((i, el) => {
-        const eid = $(el)
-          .find('.centerarticle-reaction')
-          .attr('id')
-          .replace(/^bookmark-/, '')
-        const url = $(el)
-          .find('.centerarticle-entry-title > a')
-          .attr('href')
-        const date = $(el)
-          .find('.centerarticle-reaction-timestamp')
-          .text()
-        return { eid, url, date }
-      })
-      return list.get()
-    })
-    .catch(function(err) {
-      throw new Error(err)
-    })
+  const $ = await request(options)
+  if (!$) return []
+  const list = $('.bookmark-item').map((i, el) => {
+    const eid = $(el)
+      .find('.centerarticle-reaction')
+      .attr('id')
+      .replace(/^bookmark-/, '')
+    const url = $(el)
+      .find('.centerarticle-entry-title > a')
+      .attr('href')
+    const date = $(el)
+      .find('.centerarticle-reaction-timestamp')
+      .text()
+    return { eid, url, date }
+  })
+  return list.get()
 }
 
 /**
@@ -154,7 +157,7 @@ async function getRecentBookmarks({ user }) {
 async function getFirstBookmarkDate(user, totalBookmarkCount) {
   if (!totalBookmarkCount) return null
   const num = Math.floor(totalBookmarkCount / 20) + 1
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 15; i++) {
     const list = await extractUserBookmarks(user, num - i)
     if (list.length > 0) {
       const first = list.pop()

@@ -94,7 +94,9 @@ class Star {
     options.uri = `${B.starAddOrigin}/blog.json?uri=${encodedUri}`
     return await request(options).catch(e => {
       /* 403 Forbidden */
-      console.warn(e)
+      console.warn('++++ Failed to Star.getTotalCount ++++')
+      console.warn(uri)
+      throw new Error(e)
     })
   }
 

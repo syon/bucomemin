@@ -5,7 +5,7 @@ const Ask = require('../logic/Ask')
  * Private Mode:
  *   citron_908
  */
-const arr = ['afuro0307']
+const arr = ['and_hyphen']
 // ['afuro0307', 'anguilla', 'apipix', 'aukusoe', 'citron_908']
 
 ;(async () => {

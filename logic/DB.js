@@ -43,6 +43,7 @@ module.exports = class DB {
     const {
       userid,
       name,
+      birthday,
       totalBookmarks,
       totalFollowers,
       totalFollowings,
@@ -57,6 +58,8 @@ module.exports = class DB {
     const req = new db.Request()
     req.input('userid', db.VarChar, userid)
     req.input('name', db.NVarChar, name)
+    req.input('birthday', db.VarChar, birthday)
+    req.input('cp', db.Int, null)
     req.input('totalBookmarks', db.Int, totalBookmarks)
     req.input('totalFollowers', db.Int, totalFollowers)
     req.input('totalFollowings', db.Int, totalFollowings)
@@ -66,9 +69,10 @@ module.exports = class DB {
     req.input('totalStarBlue', db.Int, totalStarBlue)
     req.input('totalStarPurple', db.Int, totalStarPurple)
     req.input('timestamp', db.SmallDateTime, timestamp)
-    const sql = `insert into USER_PROFILE values (@userid, @name, @totalBookmarks, @totalFollowers, @totalFollowings, @totalStarYellow, @totalStarGreen, @totalStarRed, @totalStarBlue, @totalStarPurple, @timestamp)`
+    const sql = `insert into USER_PROFILE values (@userid, @name, @totalBookmarks, @totalFollowers, @totalFollowings, @totalStarYellow, @totalStarGreen, @totalStarRed, @totalStarBlue, @totalStarPurple, @timestamp, @birthday, @cp)`
     await req.query(sql).catch(e => {
       dg(sql)
+      dg(req.parameters)
       console.warn(e.toString())
     })
     await db.close()

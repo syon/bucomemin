@@ -56,6 +56,8 @@ create table USER_PROFILE (
   total_star_blue int,
   total_star_purple int,
   last_update smalldatetime,
+  birthday date,
+  cp int,
   PRIMARY KEY (userid)
 )
 ```
@@ -168,6 +170,8 @@ as
 select
   up.userid,
   up.name,
+  up.cp,
+  up.birthday,
   up.total_bookmarks,
   up.total_followers,
   up.total_followings,
@@ -187,4 +191,28 @@ select
 from USER_PROFILE up
   left outer join USER_ANNUAL_SUMMARY_VIEW v
     on (v.userid = up.userid)
+```
+
+
+## CP Calcurate
+
+```sql
+update USER_PROFILE
+set cp = floor(
+  (
+    convert(int, BOOKMARK_SUM) * 0.5
+     + convert(int, COMMENTED_LEN) * 0.7
+     + convert(int, STARRED_LEN)
+     + convert(int, ANOND_LEN)
+     + total_followers
+     + isnull(total_star_green, 0) * 2
+     + isnull(total_star_red, 0) * 3
+     + isnull(total_star_blue, 0) * 5
+     + isnull(total_star_purple, 0) * 8
+  )
+  * STARRED_RATE * STARRED_RATE / 10000
+)
+from USER_PROFILE
+inner join USER_ANNUAL_SUMMARY_VIEW
+on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
 ```
