@@ -116,17 +116,19 @@ set cp = floor(
     +
     convert(int, COMMENTED_LEN) * 0.1
     +
+    convert(int, STARRED_SUM) / 50
+    +
     (
       convert(int, STARRED_SUM)
       /
       convert(int, COMMENTED_LEN)
       *
-      (STARRED_RATE / 100)
+      convert(int, BUCOME_RATE) / 100
       *
-      100
+      35
     )
     +
-    convert(int, ANOND_LEN)
+    convert(int, ANOND_LEN) * 0.2
     +
     (
       isNull(total_star_green, 0) * 0.8 * 0.25
