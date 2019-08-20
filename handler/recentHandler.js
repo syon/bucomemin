@@ -23,6 +23,7 @@ module.exports = async () => {
     const user = x.userid
     await Recent.updateByUser(user)
   }
+  await AzureDB.updateUserProfileCP()
   await Analyze.main()
   await Bridge.mirrorAnnualSummaly()
   await Bridge.mirrorRanking()

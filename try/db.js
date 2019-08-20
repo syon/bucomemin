@@ -5,9 +5,10 @@ debug.enable('app:*')
 const DB = require('../logic/DB')
 
 ;(async () => {
-  const user = 'Dy66'
-  const result = await DB.selectOldestTimestampBookmark(user)
-  dg(result)
+  // const user = 'Dy66'
+  // const result = await DB.selectOldestTimestampBookmark(user)
+  await DB.updateUserProfileCP()
+  // dg(result)
 })().catch(e => {
   dg(e)
 })

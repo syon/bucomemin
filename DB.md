@@ -56,7 +56,7 @@ create table USER_PROFILE (
   total_star_blue int,
   total_star_purple int,
   last_update smalldatetime,
-  birthday date,
+  birthday varchar(10),
   cp int,
   PRIMARY KEY (userid)
 )
@@ -146,6 +146,7 @@ select
   as1.attr_val as BOOKMARK_SUM,
   as2.attr_val as COMMENTED_LEN,
   as3.attr_val as STARRED_LEN,
+  as5.attr_val as STARRED_SUM,
   as4.attr_val as ANOND_LEN,
   floor(convert(float, as2.attr_val) / convert(float, as1.attr_val) * 100) as BUCOME_RATE,
   floor(convert(float, as3.attr_val) / convert(float, as2.attr_val) * 100) as STARRED_RATE,
@@ -157,6 +158,8 @@ from USER_PROFILE up
     on (as2.userid = up.userid and as2.attr_key = 'COMMENTED_LEN')
   left outer join USER_ANNUAL_SUMMALY as3
     on (as3.userid = up.userid and as3.attr_key = 'STARRED_LEN')
+  left outer join USER_ANNUAL_SUMMALY as5
+    on (as5.userid = up.userid and as5.attr_key = 'STARRED_SUM')
   left outer join USER_ANNUAL_SUMMALY as4
     on (as4.userid = up.userid and as4.attr_key = 'ANOND_LEN')
 ```
@@ -183,7 +186,8 @@ select
   up.last_update,
   convert(int, v.BOOKMARK_SUM) as ANNUAL_BOOKMARKS,
   convert(int, v.COMMENTED_LEN) as ANNUAL_COMMENTS,
-  convert(int, v.STARRED_LEN) as ANNUAL_STARRED,
+  convert(int, v.STARRED_LEN) as ANNUAL_STARREDLEN,
+  convert(int, v.STARRED_SUM) as ANNUAL_STARREDSUM,
   convert(int, v.ANOND_LEN) as ANNUAL_ANONDS,
   v.BUCOME_RATE as ANNUAL_BUCOME_RATE,
   v.STARRED_RATE as ANNUAL_STARRED_RATE,

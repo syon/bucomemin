@@ -82,7 +82,7 @@ module.exports = class DB {
     dg('[#selectRanking]')
     await db.connect(config)
     const req = new db.Request()
-    const sql = `select * from USER_RANKING_VIEW order by ANNUAL_STARRED_RATE desc`
+    const sql = `select * from USER_RANKING_VIEW order by cp desc`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -102,6 +102,53 @@ module.exports = class DB {
     })
     await db.close()
     return res.recordset
+  }
+
+  static async updateUserProfileCP() {
+    dg('[#selectTargetsForUpdate]')
+    await db.connect(config)
+    const req = new db.Request()
+    const sql = `
+update USER_PROFILE
+set cp = floor(
+  (
+    convert(int, BOOKMARK_SUM) * 0.1
+    +
+    convert(int, COMMENTED_LEN) * 0.1
+    +
+    (
+      convert(int, STARRED_SUM)
+      /
+      convert(int, COMMENTED_LEN)
+      *
+      (STARRED_RATE / 100)
+      *
+      100
+    )
+    +
+    convert(int, ANOND_LEN)
+    +
+    (
+      isNull(total_star_green, 0) * 0.8 * 0.25
+      +
+      isNull(total_star_red, 0) * 4.0 * 0.25
+      +
+      isNull(total_star_blue, 0) * 20.0 * 0.25
+      +
+      isNull(total_star_purple, 0) * 100.0 * 0.25
+    )
+  )
+  * (STARRED_RATE + 10) / 100
+)
+from USER_PROFILE
+inner join USER_ANNUAL_SUMMARY_VIEW
+on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
+    `
+    await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
   }
 
   static async selectUserProfile(userid) {
@@ -405,6 +452,36 @@ module.exports = class DB {
     sql += ` and timestamp < dateadd(day, 1, getdate())`
     sql += ` and len(comment) > 0`
     sql += ` and starlen > 0`
+    sql += ` group by userid`
+    await db.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
+
+  static async delinsAnnualSummalyStarredSum() {
+    dg('<Update STARRED_SUM>')
+    await db.connect(config)
+    // TODO: Injection
+    dg('delete from USER_ANNUAL_SUMMALY ...')
+    let delSql = ''
+    delSql += ` delete from USER_ANNUAL_SUMMALY`
+    delSql += `  where attr_key = 'STARRED_SUM'`
+    await db.query(delSql).catch(e => {
+      dg(delSql)
+      console.warn(e.toString())
+    })
+
+    dg('insert into USER_ANNUAL_SUMMALY ...')
+    let sql = ''
+    sql += ` insert into USER_ANNUAL_SUMMALY`
+    sql += ` select userid`
+    sql += `     , 'STARRED_SUM' as attr_key`
+    sql += `     , sum(starlen) as attr_val`
+    sql += ` from USER_BOOKMARKS`
+    sql += ` where timestamp >= dateadd(year, -1, getdate())`
+    sql += `   and timestamp < getdate()`
     sql += ` group by userid`
     await db.query(sql).catch(e => {
       dg(sql)
