@@ -13,19 +13,25 @@ module.exports = async () => {
   const docSet = await Firestore.fetchDocSet('newbie')
   const orders = Object.keys(docSet).map(x => ({ id: x, ...docSet[x] }))
   dg(orders)
+
   // if (orders.length === 0) return
-  for (const x of orders) {
-    const user = x.id
+  for (const { id: user } of orders) {
     dg(`$$$$$$$$ N E W B I E  - ${user} -  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$`)
+    await Recent.updateYearly({ user })
+  }
+
+  dg('- - - - - - - - - - - - - - - - - - - - -')
+  await AzureDB.updateUserProfileCP()
+
+  /* Bridge */
+  for (const { id: user } of orders) {
     await Ask.updateUserProfile({ user })
     await Bridge.newProfile(user)
     await Bridge.mirrorProfile(user)
-    await Recent.updateYearly({ user })
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
-    await removeOrder(x.id)
+    await removeOrder(user)
   }
-  await AzureDB.updateUserProfileCP()
   await Analyze.main()
   await Bridge.mirrorAnnualSummaly()
   await Bridge.mirrorRanking()
