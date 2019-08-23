@@ -17,6 +17,7 @@ module.exports = async () => {
   // if (orders.length === 0) return
   for (const { id: user } of orders) {
     dg(`$$$$$$$$ N E W B I E  - ${user} -  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$`)
+    await Ask.updateUserProfile({ user })
     await Recent.updateYearly({ user })
   }
 
@@ -25,9 +26,7 @@ module.exports = async () => {
 
   /* Bridge */
   for (const { id: user } of orders) {
-    await Ask.updateUserProfile({ user })
     await Bridge.newProfile(user)
-    await Bridge.mirrorProfile(user)
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)
     await removeOrder(user)

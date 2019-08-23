@@ -14,16 +14,6 @@ const dg = debug('app:recent')
  */
 
 module.exports = class Recent {
-  static async updateByUser(user) {
-    dg('$$$$ updateUser $$$$', user)
-    await Ask.updateUserProfile({ user })
-    await Bridge.newProfile(user)
-    await Bridge.mirrorProfile(user)
-    await Recent.updateRecent({ user })
-    await Bridge.mirrorCalendar(user)
-    await Bridge.mirrorBubble(user)
-  }
-
   static async updateRecent(params) {
     // TODO: Decode Username ???
     const { user } = params

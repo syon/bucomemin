@@ -1,5 +1,6 @@
 const dg = require('debug')('app:recentHandler')
 
+const Ask = require('../logic/Ask')
 const AzureDB = require('../logic/DB')
 const Recent = require('../logic/recent')
 const Analyze = require('../logic/analyze')
@@ -21,9 +22,24 @@ module.exports = async () => {
   if (orders.length === 0) return
   for (const x of orders) {
     const user = x.userid
-    await Recent.updateByUser(user)
+    dg('$$$$ updateUser $$$$', user)
+    await Ask.updateUserProfile({ user })
+    await Bridge.newProfile(user)
+    await Bridge.mirrorProfile(user)
+    await Recent.updateRecent({ user })
+    await Bridge.mirrorCalendar(user)
+    await Bridge.mirrorBubble(user)
   }
+
+  dg('- - - - - - - - - - - - - - - - - - - - -')
   await AzureDB.updateUserProfileCP()
+
+  for (const x of orders) {
+    const user = x.userid
+    await Bridge.mirrorProfile(user)
+    await Bridge.mirrorCalendar(user)
+    await Bridge.mirrorBubble(user)
+  }
   await Analyze.main()
   await Bridge.mirrorAnnualSummaly()
   await Bridge.mirrorRanking()
