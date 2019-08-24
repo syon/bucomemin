@@ -152,6 +152,8 @@ set cp = floor(
       +
       isNull(total_star_purple, 0) * 100.0 * 0.25
     )
+    +
+    convert(int, total_followers) * 0.5
   )
   * (STARRED_RATE + 10) / 100
 )
