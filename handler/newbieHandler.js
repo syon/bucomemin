@@ -15,8 +15,13 @@ module.exports = async () => {
   dg(orders)
 
   // if (orders.length === 0) return
-  for (const { id: user } of orders) {
+  for (const o of orders) {
+    const user = o.id
     dg(`$$$$$$$$ N E W B I E  - ${user} -  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$`)
+    const up = await AzureDB.selectUserProfile(user)
+    if (up.userid && !o.force) {
+      continue
+    }
     await Ask.updateUserProfile({ user })
     await Recent.updateYearly({ user })
   }
