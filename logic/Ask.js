@@ -10,6 +10,7 @@ module.exports = class Ask {
     dg(`Hatena.Bookmark.getOverview...`)
     const ov = await Hatena.Bookmark.getOverview(user)
     dg(`MyHatebu.getFirstBookmarkDate...`)
+    // TODO: Newbie only
     const fd = await MyHatebu.getFirstBookmarkDate(
       user,
       ov ? ov.user.total_bookmarks : null

@@ -20,22 +20,26 @@ module.exports = async () => {
   dg('[#recentHandler] start')
   const orders = await AzureDB.selectTargetsForUpdate()
   if (orders.length === 0) return
-  for (const x of orders) {
+  for (let i = 0; i < orders.length; i++) {
+    const x = orders[i]
     const user = x.userid
-    dg('$$$$ updateUser $$$$', user)
+    dg('-- <<Recent>> 1st Phase ----------------------------')
+    dg(`$$$$ [${i}/${orders.length}] ${user} $$$$`)
+    dg('----------------------------------------------------')
     await Ask.updateUserProfile({ user })
     await Bridge.newProfile(user)
-    await Bridge.mirrorProfile(user)
     await Recent.updateRecent({ user })
-    await Bridge.mirrorCalendar(user)
-    await Bridge.mirrorBubble(user)
   }
 
   dg('- - - - - - - - - - - - - - - - - - - - -')
   await AzureDB.updateUserProfileCP()
 
-  for (const x of orders) {
+  for (let i = 0; i < orders.length; i++) {
+    const x = orders[i]
     const user = x.userid
+    dg('-- <<Recent>> Last Phase ---------------------------')
+    dg(`$$$$ [${i}/${orders.length}] <<Recent>> ${user} $$$$`)
+    dg('----------------------------------------------------')
     await Bridge.mirrorProfile(user)
     await Bridge.mirrorCalendar(user)
     await Bridge.mirrorBubble(user)

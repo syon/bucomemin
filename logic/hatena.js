@@ -102,10 +102,23 @@ class Star {
 
   static async getTotalBookmarkStarCount({ user }) {
     const uri = `http://b.hatena.ne.jp/${user}/`
-    return await Star.getTotalCount({ uri }).catch(e => {
+    return await Star.getTotalCount({ uri }).catch(async e => {
+      console.warn(e.toString())
+      await Star.getTotalBookmarkStarCountHTTPS({ user }).catch(e => {
+        console.warn(e.toString())
+        return null
+      })
+      return null
+    })
+  }
+
+  static async getTotalBookmarkStarCountHTTPS({ user }) {
+    const uri = `https://b.hatena.ne.jp/${user}/`
+    const res = await Star.getTotalCount({ uri }).catch(e => {
       console.warn(e.toString())
       return null
     })
+    return res
   }
 
   static getEntryCountImageURL({ user, yyyymmdd, eid }) {

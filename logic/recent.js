@@ -1,9 +1,7 @@
 const debug = require('debug')
 const Promise = require('bluebird')
 const MyHatebu = require('./myhatebu')
-const Bridge = require('./Bridge')
 const DB = require('./DB')
-const Ask = require('./Ask')
 
 debug.enable('app:*')
 const dg = debug('app:recent')

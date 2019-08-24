@@ -95,7 +95,7 @@ module.exports = class DB {
     dg('[#selectTargetsForUpdate]')
     await db.connect(config)
     const req = new db.Request()
-    const sql = `select userid from USER_PROFILE where last_update < dateadd(day, -1, getdate()) order by last_update`
+    const sql = `select userid from USER_PROFILE where last_update < dateadd(hour, -12, getdate()) order by last_update`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -228,15 +228,18 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
   static async selectAnnualCommentsByUser(user) {
     dg(`[#selectAnnualCommentsByUser] ${user}`)
     await db.connect(config)
-    // TODO: Injection
+    const req = new db.Request()
+    req.input('userid', db.VarChar, user)
     let sql = ''
     sql += ` select hb.title, ub.url, ub.timestamp, ub.comment, ub.starlen as stars, hb.users`
     sql += ` from USER_BOOKMARKS ub left outer join HATENA_BOOKMARKS hb on(hb.eid = ub.eid)`
-    sql += ` where userid = '${user}'`
+    sql += ` where userid = @userid`
+    sql += ` and comment <> ''`
+    sql += ` and starlen > 0`
     sql += ` and timestamp >= dateadd(year, -1, getdate())`
     sql += ` and timestamp <  dateadd(day,   1, getdate())`
     sql += ` order by timestamp desc`
-    const res = await db.query(sql).catch(e => {
+    const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
     })
