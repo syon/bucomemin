@@ -190,8 +190,8 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let sql = ''
     sql += ` select eid from USER_BOOKMARKS`
     sql += `  where userid = @userid`
-    sql += `    and timestamp >= dateadd(year, -1, getdate())`
-    sql += `    and timestamp <  dateadd(day,   1, getdate())`
+    sql += `    and timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -227,8 +227,8 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += ` select date, count(date) as count from (`
     sql += `   select CONVERT(VARCHAR(10), timestamp, 111) as date from USER_BOOKMARKS`
     sql += `   where userid = @userid`
-    sql += `   and timestamp >= dateadd(year, -1, getdate())`
-    sql += `   and timestamp <  dateadd(day,   1, getdate())`
+    sql += `     and timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `     and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` ) sub`
     sql += ` group by date`
     sql += ` order by date desc`
@@ -251,8 +251,8 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += ` where userid = @userid`
     sql += ` and comment <> ''`
     sql += ` and starlen > 0`
-    sql += ` and timestamp >= dateadd(year, -1, getdate())`
-    sql += ` and timestamp <  dateadd(day,   1, getdate())`
+    sql += ` and timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += ` and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` order by timestamp desc`
     const res = await req.query(sql).catch(e => {
       dg(sql)
@@ -377,8 +377,8 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `         , substring(convert(NVARCHAR, timestamp, 112), 1, 6) as yyyymm`
     sql += `         , starlen`
     sql += `     from USER_BOOKMARKS`
-    sql += `     where timestamp >= dateadd(year, -1, getdate())`
-    sql += `       and timestamp <  dateadd(day,   1, getdate())`
+    sql += `     where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `       and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` ) sub`
     sql += ` group by userid, yyyymm`
     await db.query(sql).catch(e => {
@@ -407,8 +407,8 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `     , 'BOOKMARK_SUM' as attr_key`
     sql += `     , count(*) as attr_val`
     sql += ` from USER_BOOKMARKS`
-    sql += ` where timestamp >= dateadd(year, -1, getdate())`
-    sql += ` and timestamp < dateadd(day, 1, getdate())`
+    sql += ` where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `   and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` group by userid`
     await db.query(sql).catch(e => {
       dg(sql)
@@ -434,13 +434,13 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let sql = ''
     sql += ` insert into USER_ANNUAL_SUMMALY`
     sql += ` select userid`
-    sql += `     , 'COMMENTED_LEN' as attr_key`
-    sql += `     , count(*) as attr_val`
-    sql += ` from USER_BOOKMARKS`
-    sql += ` where timestamp >= dateadd(year, -1, getdate())`
-    sql += ` and timestamp < dateadd(day, 1, getdate())`
-    sql += ` and len(comment) > 0`
-    sql += ` group by userid`
+    sql += `      , 'COMMENTED_LEN' as attr_key`
+    sql += `      , count(*) as attr_val`
+    sql += `   from USER_BOOKMARKS`
+    sql += `  where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
+    sql += `    and len(comment) > 0`
+    sql += `  group by userid`
     await db.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -465,14 +465,14 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let sql = ''
     sql += ` insert into USER_ANNUAL_SUMMALY`
     sql += ` select userid`
-    sql += `     , 'STARRED_LEN' as attr_key`
-    sql += `     , count(*) as attr_val`
-    sql += ` from USER_BOOKMARKS`
-    sql += ` where timestamp >= dateadd(year, -1, getdate())`
-    sql += ` and timestamp < dateadd(day, 1, getdate())`
-    sql += ` and len(comment) > 0`
-    sql += ` and starlen > 0`
-    sql += ` group by userid`
+    sql += `      , 'STARRED_LEN' as attr_key`
+    sql += `      , count(*) as attr_val`
+    sql += `   from USER_BOOKMARKS`
+    sql += `  where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
+    sql += `    and len(comment) > 0`
+    sql += `    and starlen > 0`
+    sql += `  group by userid`
     await db.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -497,12 +497,12 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let sql = ''
     sql += ` insert into USER_ANNUAL_SUMMALY`
     sql += ` select userid`
-    sql += `     , 'STARRED_SUM' as attr_key`
-    sql += `     , sum(starlen) as attr_val`
-    sql += ` from USER_BOOKMARKS`
-    sql += ` where timestamp >= dateadd(year, -1, getdate())`
-    sql += `   and timestamp < getdate()`
-    sql += ` group by userid`
+    sql += `      , 'STARRED_SUM' as attr_key`
+    sql += `      , sum(starlen) as attr_val`
+    sql += `   from USER_BOOKMARKS`
+    sql += `  where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
+    sql += `  group by userid`
     await db.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -527,13 +527,13 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let sql = ''
     sql += ` insert into USER_ANNUAL_SUMMALY`
     sql += ` select userid`
-    sql += `     , 'ANOND_LEN' as attr_key`
-    sql += `     , count(*) as attr_val`
-    sql += ` from USER_BOOKMARKS`
-    sql += ` where timestamp >= dateadd(year, -1, getdate())`
-    sql += ` and timestamp < dateadd(day, 1, getdate())`
-    sql += ` and url like '%://anond%'`
-    sql += ` group by userid`
+    sql += `      , 'ANOND_LEN' as attr_key`
+    sql += `      , count(*) as attr_val`
+    sql += `   from USER_BOOKMARKS`
+    sql += `  where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
+    sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
+    sql += `    and url like '%://anond%'`
+    sql += `  group by userid`
     await db.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
