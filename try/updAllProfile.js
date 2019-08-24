@@ -3,10 +3,10 @@ const Ask = require('../logic/Ask')
 const DB = require('../logic/DB')
 
 ;(async () => {
-  const arr = await DB.selectTargetsForUpdate()
+  const arr = await DB.selectAllTargets()
   console.log(arr)
-  for (const a of arr) {
-    const user = a.userid
+  for (let i = 0; i < arr.length; i++) {
+    const user = arr[i].userid
     await Ask.updateUserProfile({ user })
   }
 })().catch(e => {

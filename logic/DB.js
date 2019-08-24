@@ -104,8 +104,21 @@ module.exports = class DB {
     return res.recordset
   }
 
+  static async selectAllTargets() {
+    dg('[#selectAllTargets]')
+    await db.connect(config)
+    const req = new db.Request()
+    const sql = `select userid from USER_PROFILE order by userid`
+    const res = await req.query(sql).catch(e => {
+      dg(sql)
+      console.warn(e.toString())
+    })
+    await db.close()
+    return res.recordset
+  }
+
   static async updateUserProfileCP() {
-    dg('[#selectTargetsForUpdate]')
+    dg('[#updateUserProfileCP]')
     await db.connect(config)
     const req = new db.Request()
     const sql = `
