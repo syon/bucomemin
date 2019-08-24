@@ -12,12 +12,24 @@ module.exports = async () => {
   dg('[#newbieHandler] start')
   const docSet = await Firestore.fetchDocSet('newbie')
   const orders = Object.keys(docSet).map(x => ({ id: x, ...docSet[x] }))
-  dg(orders)
 
-  // if (orders.length === 0) return
+  const newbies = []
   for (const o of orders) {
     const user = o.id
-    dg(`$$$$$$$$ N E W B I E  - ${user} -  $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$`)
+    const up = await AzureDB.selectUserProfile(user)
+    if (up.userid && !o.force) {
+      dg('SKIP', user)
+      await removeOrder(user)
+      continue
+    }
+    newbies.push(o)
+  }
+
+  // if (orders.length === 0) return
+  for (let i = 0; i < newbies.length; i++) {
+    const o = newbies[i]
+    const user = o.id
+    dg(`$$$$$$$$ [${i}/${newbies.length}] NEWBIE  - ${user} -  $$$$$$$$$$$$$$$`)
     const up = await AzureDB.selectUserProfile(user)
     if (up.userid && !o.force) {
       continue
