@@ -82,7 +82,11 @@ module.exports = class DB {
     dg('[#selectRanking]')
     await db.connect(config)
     const req = new db.Request()
-    const sql = `select * from USER_RANKING_VIEW order by cp desc`
+    const sql = `
+select * from USER_RANKING_VIEW
+where total_bookmarks is not null
+order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
+`
     const res = await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
@@ -141,7 +145,7 @@ set cp = floor(
       35
     )
     +
-    convert(int, ANOND_LEN) * 0.2
+    isNull(convert(int, ANOND_LEN), 0) * 0.2
     +
     (
       isNull(total_star_green, 0) * 0.8 * 0.25
@@ -153,9 +157,9 @@ set cp = floor(
       isNull(total_star_purple, 0) * 100.0 * 0.25
     )
     +
-    convert(int, total_followers) * 0.5
+    convert(int, total_followers) * 0.3
   )
-  * (STARRED_RATE + 10) / 100
+  * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
 )
 from USER_PROFILE
 inner join USER_ANNUAL_SUMMARY_VIEW
