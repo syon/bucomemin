@@ -7,7 +7,8 @@ const DB = require('../logic/DB')
 ;(async () => {
   // const user = 'Dy66'
   // const result = await DB.selectOldestTimestampBookmark(user)
-  await DB.updateUserProfileCP()
+  // await DB.updateUserProfileCP()
+  await DB.deleteUser('holstein_ojisan')
   // dg(result)
 })().catch(e => {
   dg(e)

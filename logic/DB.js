@@ -544,4 +544,22 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     })
     await db.close()
   }
+
+  static async deleteUser(userid) {
+    await db.connect(config)
+    const req = new db.Request()
+    req.input('userid', db.VarChar, userid)
+    const sql = `
+delete from USER_PROFILE where userid = @userid;
+delete from USER_ANNUAL_SUMMALY where userid = @userid;
+delete from USER_BOOKMARKS where userid = @userid;
+delete from USER_MONTHLY_TOTAL where userid = @userid;
+`
+    await req.query(sql).catch(e => {
+      dg(sql)
+      dg(req.parameters)
+      console.warn(e.toString())
+    })
+    await db.close()
+  }
 }
