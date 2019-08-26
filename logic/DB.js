@@ -129,9 +129,9 @@ order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
 update USER_PROFILE
 set cp = floor(
   (
-    convert(int, BOOKMARK_SUM) * 0.1
+    convert(int, BOOKMARK_SUM) * 0.2
     +
-    convert(int, COMMENTED_LEN) * 0.1
+    convert(int, COMMENTED_LEN) * 0.2
     +
     convert(int, STARRED_SUM) / 50
     +
@@ -142,7 +142,7 @@ set cp = floor(
       *
       convert(int, BUCOME_RATE) / 100
       *
-      35
+      50
     )
     +
     isNull(convert(int, ANOND_LEN), 0) * 0.2
@@ -157,14 +157,18 @@ set cp = floor(
       isNull(total_star_purple, 0) * 100.0 * 0.25
     )
     +
-    convert(int, total_followers) * 0.3
+    convert(int, total_followers)
+    *
+    isNull(convert(int, STARRED_RATE), 0)
+    /
+    100 * 0.5
   )
   * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
 )
 from USER_PROFILE
 inner join USER_ANNUAL_SUMMARY_VIEW
 on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
-    `
+`
     await req.query(sql).catch(e => {
       dg(sql)
       console.warn(e.toString())
