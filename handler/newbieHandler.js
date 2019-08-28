@@ -30,10 +30,6 @@ module.exports = async () => {
     const o = newbies[i]
     const user = o.id
     dg(`$$$$$$$$ [${i}/${newbies.length}] NEWBIE  - ${user} -  $$$$$$$$$$$$$$$`)
-    const up = await AzureDB.selectUserProfile(user)
-    if (up.userid && !o.force) {
-      continue
-    }
     await Ask.updateUserProfile({ user })
     await Recent.updateYearly({ user })
   }

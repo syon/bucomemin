@@ -83,7 +83,7 @@ module.exports = class DB {
     await db.connect(config)
     const req = new db.Request()
     const sql = `
-select * from USER_RANKING_VIEW
+select TOP 500 * from USER_RANKING_VIEW
 where total_bookmarks is not null
 order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
 `
@@ -129,9 +129,14 @@ order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
 update USER_PROFILE
 set cp = floor(
   (
-    convert(int, BOOKMARK_SUM) * 0.2
-    +
-    convert(int, COMMENTED_LEN) * 0.2
+    (
+      convert(int, BOOKMARK_SUM) * 0.5
+      * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
+      +
+      convert(int, COMMENTED_LEN) * 0.6
+      * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
+      * (isNull(convert(int, STARRED_RATE), 0) + 10) / 200
+    )
     +
     convert(int, STARRED_SUM) / 50
     +
@@ -157,13 +162,16 @@ set cp = floor(
       isNull(total_star_purple, 0) * 100.0 * 0.25
     )
     +
-    convert(int, total_followers)
-    *
-    isNull(convert(int, STARRED_RATE), 0)
-    /
-    100 * 0.5
+    (
+      isNull(convert(int, total_followers), 0)
+      *
+      isNull(convert(int, STARRED_RATE), 0)
+      /
+      100 * 0.5
+    )
   )
   * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
+  * 0.3
 )
 from USER_PROFILE
 inner join USER_ANNUAL_SUMMARY_VIEW
