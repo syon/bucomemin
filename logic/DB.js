@@ -133,17 +133,17 @@ set cp = floor(
       convert(int, BOOKMARK_SUM) * 0.5
       * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
       +
-      convert(int, COMMENTED_LEN) * 0.6
+      convert(int, COMMENTED_LEN) * 0.7
       * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
-      * (isNull(convert(int, STARRED_RATE), 0) + 10) / 200
+      * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
     )
     +
-    convert(int, STARRED_SUM) / 50
+    convert(int, STARRED_SUM) / 3
     +
     (
       convert(int, STARRED_SUM)
       /
-      convert(int, COMMENTED_LEN)
+      (convert(int, COMMENTED_LEN) + 100)
       *
       convert(int, BUCOME_RATE) / 100
       *
@@ -153,13 +153,13 @@ set cp = floor(
     isNull(convert(int, ANOND_LEN), 0) * 0.2
     +
     (
-      isNull(total_star_green, 0) * 0.8 * 0.25
+      isNull(total_star_green, 0) * 0.8 * 0.75
       +
-      isNull(total_star_red, 0) * 4.0 * 0.25
+      isNull(total_star_red, 0) * 4.0 * 0.75
       +
-      isNull(total_star_blue, 0) * 20.0 * 0.25
+      isNull(total_star_blue, 0) * 20.0 * 0.75
       +
-      isNull(total_star_purple, 0) * 100.0 * 0.25
+      isNull(total_star_purple, 0) * 100.0 * 0.75
     )
     +
     (
@@ -167,11 +167,11 @@ set cp = floor(
       *
       isNull(convert(int, STARRED_RATE), 0)
       /
-      100 * 0.5
+      100 * 0.8
     )
   )
   * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
-  * 0.3
+  * 0.15
 )
 from USER_PROFILE
 inner join USER_ANNUAL_SUMMARY_VIEW
