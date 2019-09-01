@@ -167,7 +167,7 @@ set cp = floor(
       *
       isNull(convert(int, STARRED_RATE), 0)
       /
-      100 * 0.85
+      100 * 0.87
     )
   )
   * (isNull(convert(int, STARRED_RATE), 0) + 10) / 100
