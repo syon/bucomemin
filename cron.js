@@ -19,7 +19,8 @@ bunny('Hello! cron.js is running.')
  * Recent
  */
 new CronJob(
-  '0 25 * * * *', // 毎時 25 分 00 秒
+  // 秒 分 時 日 月 曜
+  '0 0 4 * * *', // 毎日 04:00
   async () => {
     bunny('Start Recent Cron')
     await recentHandler().catch(e => {
