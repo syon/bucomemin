@@ -23,7 +23,8 @@ module.exports = class Bridge {
     const summaly = await AzureDB.selectAllAnnualSummaly()
     Object.keys(summaly).forEach(async userid => {
       const obj = { annual: summaly[userid] }
-      await Firestore.set(`userdata/${userid}`, obj)
+      // after profile
+      await Firestore.update(`userdata/${userid}`, obj)
     })
   }
 
