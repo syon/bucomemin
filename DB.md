@@ -25,6 +25,30 @@ create table HATENA_BOOKMARKS (
 ```
 
 
+## DAILY_HOTENTRY
+
+|name    |type    |length|
+|--------|--------|-----:|
+|date    |varchar |     8|
+|category|varchar |    20|
+|ranking |smallint|     -|
+|title   |nvarchar|   200|
+|url     |varchar |  2000|
+|pop_date|varchar |    16|
+
+```sql
+create table DAILY_HOTENTRY (
+  date varchar(8),
+  category varchar(20),
+  ranking smallint,
+  title nvarchar(200),
+  url varchar(2000),
+  pop_date varchar(16),
+  PRIMARY KEY (date, category, ranking)
+)
+```
+
+
 ## USER_PROFILE
 
 b.hatena.ne.jp/userid/ ページに記載のプロフィールのスクレイピングデータ。

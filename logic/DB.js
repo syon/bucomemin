@@ -567,10 +567,32 @@ delete from USER_ANNUAL_SUMMALY where userid = @userid;
 delete from USER_BOOKMARKS where userid = @userid;
 delete from USER_MONTHLY_TOTAL where userid = @userid;
 `
-    await req.query(sql).catch(e => {
+    await req.query(sql).catch((e) => {
       dg(sql)
       dg(req.parameters)
       console.warn(e.toString())
+    })
+    await db.close()
+  }
+
+  static async insertDailyHotentry(arg) {
+    dg('<Insert DAILY_HOTENTRY>')
+    await db.connect(config)
+    const { date, category, ranking, title, url, popDate } = arg
+    const req = new db.Request()
+    req.input('date', db.VarChar, date)
+    req.input('category', db.VarChar, category)
+    req.input('ranking', db.Int, ranking)
+    req.input('title', db.NVarChar, title)
+    req.input('url', db.VarChar, url)
+    req.input('popDate', db.VarChar, popDate)
+    let sql = ''
+    sql += ` insert into DAILY_HOTENTRY`
+    sql += ` values (@date, @category, @ranking, @title, @url, @popDate)`
+    await req.query(sql).catch((e) => {
+      console.warn(e.toString())
+      dg(sql)
+      dg(req.parameters)
     })
     await db.close()
   }
