@@ -8,8 +8,8 @@ const config = {
   server: process.env.MSSQL_SERVER,
   database: process.env.MSSQL_DATABASE,
   options: {
-    encrypt: true // Use this if you're on Windows Azure
-  }
+    encrypt: true, // Use this if you're on Windows Azure
+  },
 }
 
 module.exports = class DB {
@@ -32,7 +32,7 @@ module.exports = class DB {
     const req = new db.Request()
     req.input('userid', db.VarChar, userid)
     const sql = `delete from USER_PROFILE where userid = @userid`
-    await req.query(sql).catch(e => {
+    await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -52,7 +52,7 @@ module.exports = class DB {
       totalStarRed,
       totalStarBlue,
       totalStarPurple,
-      timestamp
+      timestamp,
     } = obj
     await db.connect(config)
     const req = new db.Request()
@@ -70,7 +70,7 @@ module.exports = class DB {
     req.input('totalStarPurple', db.Int, totalStarPurple)
     req.input('timestamp', db.SmallDateTime, timestamp)
     const sql = `insert into USER_PROFILE values (@userid, @name, @totalBookmarks, @totalFollowers, @totalFollowings, @totalStarYellow, @totalStarGreen, @totalStarRed, @totalStarBlue, @totalStarPurple, @timestamp, @birthday, @cp)`
-    await req.query(sql).catch(e => {
+    await req.query(sql).catch((e) => {
       dg(sql)
       dg(req.parameters)
       console.warn(e.toString())
@@ -87,7 +87,7 @@ select TOP 500 * from USER_RANKING_VIEW
 where total_bookmarks is not null
 order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
 `
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -100,7 +100,7 @@ order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
     await db.connect(config)
     const req = new db.Request()
     const sql = `select userid from USER_PROFILE where last_update < dateadd(hour, -12, getdate()) order by last_update`
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -113,7 +113,7 @@ order by cp desc, convert(int, ANNUAL_STARREDSUM) desc
     await db.connect(config)
     const req = new db.Request()
     const sql = `select userid from USER_PROFILE order by userid`
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -177,7 +177,7 @@ from USER_PROFILE
 inner join USER_ANNUAL_SUMMARY_VIEW
 on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
 `
-    await req.query(sql).catch(e => {
+    await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -190,7 +190,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     const req = new db.Request()
     req.input('userid', db.VarChar, userid)
     const sql = `select * from USER_PROFILE where userid = @userid`
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -208,12 +208,12 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `  where userid = @userid`
     sql += `    and timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
     sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
     await db.close()
-    return res.recordset.map(x => x.eid)
+    return res.recordset.map((x) => x.eid)
   }
 
   static async selectAllAnnualSummaly() {
@@ -226,7 +226,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     const result = res.recordset
     // //////////////////
     const dataSet = {}
-    result.forEach(r => {
+    result.forEach((r) => {
       if (!dataSet[r.userid]) dataSet[r.userid] = {}
       const val = /^\d+$/.test(r.attr_val) ? Number(r.attr_val) : r.attr_val
       dataSet[r.userid][r.attr_key] = val
@@ -248,7 +248,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += ` ) sub`
     sql += ` group by date`
     sql += ` order by date desc`
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -270,7 +270,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += ` and timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
     sql += ` and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` order by timestamp desc`
-    const res = await req.query(sql).catch(e => {
+    const res = await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -308,7 +308,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     // await db.connect(config)
     // TODO: Injection
     const sql = `delete from HATENA_BOOKMARKS where eid = '${eid}'`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -325,7 +325,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     req.input('url', db.VarChar, url)
     req.input('users', db.VarChar, users)
     const sql = `insert into HATENA_BOOKMARKS values (@eid, @eurl, @title, @url, @users)`
-    await req.query(sql).catch(e => {
+    await req.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -343,7 +343,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     // await db.connect(config)
     // TODO: Injection
     const sql = `delete from USER_BOOKMARKS where userid = '${userid}' and eid = '${eid}'`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -362,7 +362,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     req.input('tags', db.NVarChar, tags)
     req.input('starlen', db.VarChar, starlen)
     const sql = `insert into USER_BOOKMARKS values (@userid, @eid, @url, @timestamp, @comment, @tags, @starlen)`
-    await req.query(sql).catch(e => {
+    await req.query(sql).catch((e) => {
       dg(sql)
       dg(req.parameters)
       console.warn(e.toString())
@@ -380,7 +380,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     delSql += `  where attr_key = 'STARLEN_SUM'`
     delSql += `    and yyyymm >= substring(convert(NVARCHAR, dateadd(year, -1, getdate()), 112), 1, 6)`
     delSql += `    and yyyymm <= substring(convert(NVARCHAR, dateadd(day,   1, getdate()), 112), 1, 6)`
-    await db.query(delSql).catch(e => {
+    await db.query(delSql).catch((e) => {
       dg(delSql)
       console.warn(e.toString())
     })
@@ -397,7 +397,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `       and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` ) sub`
     sql += ` group by userid, yyyymm`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -412,7 +412,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let delSql = ''
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'BOOKMARK_SUM'`
-    await db.query(delSql).catch(e => {
+    await db.query(delSql).catch((e) => {
       console.warn(e.toString())
     })
 
@@ -426,7 +426,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += ` where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
     sql += `   and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += ` group by userid`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -441,7 +441,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let delSql = ''
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'COMMENTED_LEN'`
-    await db.query(delSql).catch(e => {
+    await db.query(delSql).catch((e) => {
       dg(delSql)
       console.warn(e.toString())
     })
@@ -457,7 +457,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += `    and len(comment) > 0`
     sql += `  group by userid`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -472,7 +472,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let delSql = ''
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'STARRED_LEN'`
-    await db.query(delSql).catch(e => {
+    await db.query(delSql).catch((e) => {
       dg(delSql)
       console.warn(e.toString())
     })
@@ -489,7 +489,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `    and len(comment) > 0`
     sql += `    and starlen > 0`
     sql += `  group by userid`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -504,7 +504,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let delSql = ''
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'STARRED_SUM'`
-    await db.query(delSql).catch(e => {
+    await db.query(delSql).catch((e) => {
       dg(delSql)
       console.warn(e.toString())
     })
@@ -519,7 +519,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `  where timestamp >= convert(smalldatetime, convert(nvarchar, dateadd(year, -1, getdate()), 111), 111)`
     sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += `  group by userid`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
@@ -534,7 +534,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     let delSql = ''
     delSql += ` delete from USER_ANNUAL_SUMMALY`
     delSql += `  where attr_key = 'ANOND_LEN'`
-    await db.query(delSql).catch(e => {
+    await db.query(delSql).catch((e) => {
       dg(delSql)
       console.warn(e.toString())
     })
@@ -550,7 +550,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     sql += `    and timestamp <  convert(smalldatetime, convert(nvarchar, getdate(), 111), 111)`
     sql += `    and url like '%://anond%'`
     sql += `  group by userid`
-    await db.query(sql).catch(e => {
+    await db.query(sql).catch((e) => {
       dg(sql)
       console.warn(e.toString())
     })
