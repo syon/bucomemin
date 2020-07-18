@@ -1,7 +1,6 @@
 const debug = require('debug')
-const axios = require('axios')
-const cheerio = require('cheerio')
 const DB = require('../logic/DB')
+const DailyHotentry = require('../logic/DailyHotentry')
 
 const dg = debug('app:daily')
 
@@ -10,24 +9,11 @@ const dg = debug('app:daily')
 
 module.exports = async () => {
   const category = 'it'
-  const date = '20111206'
-  const url = `https://b.hatena.ne.jp/hotentry/${category}/${date}`
-  const res = await axios.get(url)
-  const $ = cheerio.load(res.data, { decodeEntities: false })
-  const entries = $('.entrylist-main .entrylist-contents')
-    .map((idx, el) => {
-      const main = $(el).find('.entrylist-contents-main')
-      const url = $(main).find('.entrylist-contents-title a').attr('href')
-      const title = $(main).find('.entrylist-contents-title a').attr('title')
-      const popDate = $(main).find('.entrylist-contents-date').text()
-      const ranking = idx + 1
-      return { date, category, url, title, popDate, ranking }
-    })
-    .get()
+  const date = '20200717'
+  const entries = await DailyHotentry.fetch(date, category)
   for (let e of entries) {
     dg(e)
     await DB.insertDailyHotentry(e)
   }
-
   return null
 }
