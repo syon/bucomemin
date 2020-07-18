@@ -32,6 +32,7 @@ create table HATENA_BOOKMARKS (
 |date    |varchar |     8|
 |category|varchar |    20|
 |ranking |smallint|     -|
+|eid     |varchar |    20|
 |title   |nvarchar|   200|
 |url     |varchar |  2000|
 |pop_date|varchar |    16|
@@ -41,6 +42,7 @@ create table DAILY_HOTENTRY (
   date varchar(8),
   category varchar(20),
   ranking smallint,
+  eid varchar(20),
   title nvarchar(200),
   url varchar(2000),
   pop_date varchar(16),

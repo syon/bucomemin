@@ -326,7 +326,7 @@ on USER_ANNUAL_SUMMARY_VIEW.userid = USER_PROFILE.userid
     req.input('users', db.VarChar, users)
     const sql = `insert into HATENA_BOOKMARKS values (@eid, @eurl, @title, @url, @users)`
     await req.query(sql).catch((e) => {
-      dg(sql)
+      // dg(sql)
       console.warn(e.toString())
     })
     // await db.close()
@@ -578,22 +578,24 @@ delete from USER_MONTHLY_TOTAL where userid = @userid;
   static async insertDailyHotentry(arg) {
     dg('<Insert DAILY_HOTENTRY>')
     await db.connect(config)
-    const { date, category, ranking, title, url, popDate } = arg
+    const { date, category, ranking, eid, title, url, popDate } = arg
     const req = new db.Request()
     req.input('date', db.VarChar, date)
     req.input('category', db.VarChar, category)
     req.input('ranking', db.Int, ranking)
+    req.input('eid', db.VarChar, eid)
     req.input('title', db.NVarChar, title)
     req.input('url', db.VarChar, url)
     req.input('popDate', db.VarChar, popDate)
     let sql = ''
     sql += ` insert into DAILY_HOTENTRY`
-    sql += ` values (@date, @category, @ranking, @title, @url, @popDate)`
+    sql += ` values (@date, @category, @ranking, @eid, @title, @url, @popDate)`
     await req.query(sql).catch((e) => {
       console.warn(e.toString())
       dg(sql)
       dg(req.parameters)
     })
+    await DB.insertHatenaBookmark(arg)
     await db.close()
   }
 }
