@@ -5,13 +5,14 @@ Azure SQL Database
 
 ## HATENA_BOOKMARKS
 
-|name |type    |length|
-|-----|--------|-----:|
-|eid  |varchar |    20|
-|eurl |varchar |  2000|
-|title|nvarchar|   200|
-|url  |varchar |  2000|
-|users|smallint|     -|
+|name     |type         |length             |
+|---------|-------------|------------------:|
+|eid      |varchar      |                 20|
+|eurl     |varchar      |               2000|
+|title    |nvarchar     |                200|
+|url      |varchar      |               2000|
+|users    |smallint     |                  -|
+|timestamp|smalldatetime|YYYY-MM-DD hh:mm:ss|
 
 ```sql
 create table HATENA_BOOKMARKS (
@@ -20,6 +21,7 @@ create table HATENA_BOOKMARKS (
   title nvarchar(200),
   url varchar(2000),
   users smallint,
+  timestamp smalldatetime,
   PRIMARY KEY (eid)
 )
 ```
