@@ -576,7 +576,7 @@ delete from USER_MONTHLY_TOTAL where userid = @userid;
   }
 
   static async insertDailyHotentry(arg) {
-    dg('<Insert DAILY_HOTENTRY>')
+    // dg('<Insert DAILY_HOTENTRY>')
     await db.connect(config)
     const { date, category, ranking, eid, title, url, popDate } = arg
     const req = new db.Request()
@@ -595,6 +595,7 @@ delete from USER_MONTHLY_TOTAL where userid = @userid;
       dg(sql)
       dg(req.parameters)
     })
+    await DB.deleteHatenaBookmark(arg)
     await DB.insertHatenaBookmark(arg)
     await db.close()
   }
