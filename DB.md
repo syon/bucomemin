@@ -25,6 +25,22 @@ create table HATENA_BOOKMARKS (
 ```
 
 
+## HATENA_ENTRY_EXTD
+
+|name   |type    |length|
+|-------|--------|-----:|
+|eid    |varchar |    20|
+|domain |varchar |   100|
+
+```sql
+create table HATENA_ENTRY_EXTD (
+  eid varchar(20),
+  domain varchar(100),
+  PRIMARY KEY (eid)
+)
+```
+
+
 ## DAILY_HOTENTRY
 
 |name    |type    |length|

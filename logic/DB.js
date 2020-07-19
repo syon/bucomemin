@@ -599,4 +599,34 @@ delete from USER_MONTHLY_TOTAL where userid = @userid;
     await DB.insertHatenaBookmark(arg)
     await db.close()
   }
+
+  static async selectHatenaBookmarksEids() {
+    await db.connect(config)
+    const req = new db.Request()
+    let sql = ''
+    sql += ` select TOP (100000) eid, url from HATENA_BOOKMARKS a`
+    sql += ` where not exists (select 1 from HATENA_ENTRY_EXTD b where a.eid = b.eid)`
+    const res = await req.query(sql).catch((e) => {
+      console.warn(e.toString())
+      dg(sql)
+      dg(req.parameters)
+    })
+    await db.close()
+    return res.recordset
+  }
+
+  static async insertHatenaEntryExtd(arg) {
+    const req = new db.Request()
+    const { eid, domain } = arg
+    req.input('eid', db.VarChar, eid)
+    req.input('domain', db.VarChar, domain)
+    let sql = ''
+    sql += ` insert into HATENA_ENTRY_EXTD`
+    sql += ` values (@eid, @domain)`
+    await req.query(sql).catch((e) => {
+      console.warn(e.toString())
+      dg(sql)
+      dg(req.parameters)
+    })
+  }
 }
